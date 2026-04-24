@@ -1,0 +1,101 @@
+
+CREATE DATABASE IF NOT EXISTS clube_tamoios;
+USE clube_tamoios;
+
+-- 1. Tabelas sem dependência
+CREATE TABLE Genero (
+  idGenero INT AUTO_INCREMENT PRIMARY KEY,
+  nome VARCHAR(45)
+);
+
+CREATE TABLE Cargo (
+  idCargo INT AUTO_INCREMENT PRIMARY KEY,
+  Nome VARCHAR(45)
+);
+
+CREATE TABLE Classe (
+  idClasse INT AUTO_INCREMENT PRIMARY KEY,
+  nome VARCHAR(255)
+);
+
+CREATE TABLE Especialidade (
+  idEspecialidades INT AUTO_INCREMENT PRIMARY KEY,
+  nome VARCHAR(45),
+  descricao TEXT,
+  date DATE
+);
+
+CREATE TABLE Medicamento (
+  idMedicamento INT AUTO_INCREMENT PRIMARY KEY,
+  Nome VARCHAR(45)
+);
+
+CREATE TABLE Comorbidade (
+  idComorbidade INT AUTO_INCREMENT PRIMARY KEY,
+  Nome VARCHAR(45)
+);
+
+-- 2. Unidade depende de Genero
+CREATE TABLE Unidade (
+  idUnidade INT AUTO_INCREMENT PRIMARY KEY,
+  nome VARCHAR(255),
+  Genero_idGenero INT,
+  FOREIGN KEY (Genero_idGenero) REFERENCES Genero(idGenero)
+);
+
+-- 3. Turma depende de Classe e Unidade
+CREATE TABLE Turma (
+  Classe_idClasse INT,
+  Unidade_idUnidade INT,
+  PRIMARY KEY (Classe_idClasse, Unidade_idUnidade),
+  FOREIGN KEY (Classe_idClasse) REFERENCES Classe(idClasse),
+  FOREIGN KEY (Unidade_idUnidade) REFERENCES Unidade(idUnidade)
+);
+
+-- 4. Pessoa depende de Classe, Genero, Unidade, Cargo
+CREATE TABLE Pessoa (
+  idPessoa INT AUTO_INCREMENT PRIMARY KEY,
+  Classe_idClasse INT,
+  Genero_idGenero INT,
+  Unidade_idUnidade INT,
+  nome VARCHAR(45),
+  cpf VARCHAR(45),
+  rg VARCHAR(45),
+  data_nascimento VARCHAR(45),
+  telefone VARCHAR(45),
+  isDesbravador TINYINT,
+  idResponsavel INT,
+  fkCargo INT,
+  FOREIGN KEY (Classe_idClasse) REFERENCES Classe(idClasse),
+  FOREIGN KEY (Genero_idGenero) REFERENCES Genero(idGenero),
+  FOREIGN KEY (Unidade_idUnidade) REFERENCES Unidade(idUnidade),
+  FOREIGN KEY (fkCargo) REFERENCES Cargo(idCargo)
+);
+
+-- 5. Usuario depende de Pessoa e Cargo
+CREATE TABLE Usuario (
+  idUsuario INT AUTO_INCREMENT PRIMARY KEY,
+  Pessoa_idPessoa INT NOT NULL,
+  fkCargo INT NOT NULL,
+  email VARCHAR(255) NOT NULL,
+  senha VARCHAR(255) NOT NULL,
+  ativo TINYINT DEFAULT 1,
+  FOREIGN KEY (Pessoa_idPessoa) REFERENCES Pessoa(idPessoa),
+  FOREIGN KEY (fkCargo) REFERENCES Cargo(idCargo)
+);
+
+ALTER TABLE Pessoa MODIFY COLUMN isDesbravador BIT(1);
+ALTER TABLE Usuario MODIFY COLUMN ativo BIT(1) NOT NULL DEFAULT b'1';
+
+-- Dados base
+INSERT INTO Genero (nome) VALUES ('Masculino'), ('Feminino');
+INSERT INTO Cargo (Nome) VALUES ('Diretor'), ('Secretaria'), ('Tesoureiro'), ('Instrutor');
+INSERT INTO Classe (nome) VALUES ('Amigos'), ('Companheiros'), ('Pesquisadores'), ('Pioneiros'), ('Excursionistas'), ('Embaixadores'), ('Agrupados');
+INSERT INTO Unidade (nome, Genero_idGenero) VALUES ('Jaguares', 1), ('Morcegos', 2);
+
+-- Pessoa que vai virar usuário
+INSERT INTO Pessoa (nome, cpf, rg, fkCargo) VALUES ('Lucas Hideaki', '123.456.789-00', '12.345.678-9', 1);
+
+-- Usuário de teste
+INSERT INTO Usuario (Pessoa_idPessoa, fkCargo, email, senha, ativo)
+VALUES (1, 1, 'lucas@tamoios.com', '123456', 1);
