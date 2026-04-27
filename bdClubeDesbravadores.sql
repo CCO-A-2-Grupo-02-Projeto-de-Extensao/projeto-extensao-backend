@@ -1,5 +1,5 @@
-CREATE DATABASE ClubeDesbravadores;
-USE ClubeDesbravadores;
+CREATE DATABASE bdClubeDesbravadores;
+USE bdClubeDesbravadores;
 
 CREATE TABLE IF NOT EXISTS Genero (
     idGenero INT AUTO_INCREMENT PRIMARY KEY,
@@ -22,9 +22,21 @@ CREATE TABLE IF NOT EXISTS Cargo (
     Nome VARCHAR(45) NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS Evento (
+    idEvento INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    tipo VARCHAR(50),
+    data_inicio DATE NOT NULL,
+    data_fim DATE,
+    descricao TEXT
+);
+
 CREATE TABLE IF NOT EXISTS Chamada (
     idChamada INT AUTO_INCREMENT PRIMARY KEY,
-    data DATE NOT NULL
+    Evento_idEvento INT NOT NULL,
+    data_chamada DATE NOT NULL,
+    titulo VARCHAR(100), -- "Chamada de Sábado de Manhã", "Chamada Principal" seria para quando o evento fosse durar mais de um dia
+    FOREIGN KEY (Evento_idEvento) REFERENCES Evento(idEvento) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS Medicamento (
@@ -143,3 +155,4 @@ CREATE TABLE IF NOT EXISTS Diagnostico (
     FOREIGN KEY (Comorbidade_idComorbidade) REFERENCES Comorbidade(idComorbidade) ON DELETE CASCADE,
     FOREIGN KEY (Documento_idDocumento) REFERENCES Documento(idDocumento) ON DELETE SET NULL
 );
+
