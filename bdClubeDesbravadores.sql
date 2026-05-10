@@ -1,4 +1,4 @@
-CREATE DATABASE bdClubeDesbravadores;
+CREATE DATABASE IF NOT EXISTS bdClubeDesbravadores;
 USE bdClubeDesbravadores;
 
 CREATE TABLE IF NOT EXISTS Genero (
@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS Chamada (
     idChamada INT AUTO_INCREMENT PRIMARY KEY,
     Evento_idEvento INT NOT NULL,
     data_chamada DATE NOT NULL,
-    titulo VARCHAR(100), -- "Chamada de Sábado de Manhã", "Chamada Principal" seria para quando o evento fosse durar mais de um dia
+    titulo VARCHAR(100),
     FOREIGN KEY (Evento_idEvento) REFERENCES Evento(idEvento) ON DELETE CASCADE
 );
 
@@ -155,4 +155,3 @@ CREATE TABLE IF NOT EXISTS Diagnostico (
     FOREIGN KEY (Comorbidade_idComorbidade) REFERENCES Comorbidade(idComorbidade) ON DELETE CASCADE,
     FOREIGN KEY (Documento_idDocumento) REFERENCES Documento(idDocumento) ON DELETE SET NULL
 );
-
