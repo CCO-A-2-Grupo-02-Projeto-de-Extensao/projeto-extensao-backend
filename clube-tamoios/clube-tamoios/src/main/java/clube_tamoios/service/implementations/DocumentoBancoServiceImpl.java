@@ -34,6 +34,20 @@ public class DocumentoBancoServiceImpl implements DocumentoService {
     }
 
     @Override
+    public Documento substituir(Integer id, MultipartFile novoArquivo) {
+        Documento doc = buscarPorId(id);
+        try {
+            doc.setNomeOriginal(novoArquivo.getOriginalFilename());
+            doc.setMimeType(novoArquivo.getContentType());
+            doc.setTamanho(novoArquivo.getSize());
+            doc.setDados(novoArquivo.getBytes());
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao ler bytes do arquivo", e);
+        }
+        return documentoRepository.save(doc);
+    }
+
+    @Override
     public List<Documento> listarPorPessoa(Integer idPessoa) {
         return documentoRepository.findByPessoaIdPessoa(idPessoa);
     }

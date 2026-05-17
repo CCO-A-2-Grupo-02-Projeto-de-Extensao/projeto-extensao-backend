@@ -56,6 +56,27 @@ public class DocumentoLocalServiceImpl implements DocumentoService {
     }
 
     @Override
+    public Documento substituir(Integer id, MultipartFile novoArquivo) {
+        Documento doc = buscarPorId(id);
+        try {
+            Files.deleteIfExists(Paths.get(doc.getNomeGerado()));
+
+            String nomeFisico = UUID.randomUUID() + "_" + novoArquivo.getOriginalFilename();
+            Path destino = pastaBase.resolve(nomeFisico);
+            Files.createDirectories(pastaBase);
+            Files.write(destino, novoArquivo.getBytes());
+
+            doc.setNomeOriginal(novoArquivo.getOriginalFilename());
+            doc.setMimeType(novoArquivo.getContentType());
+            doc.setTamanho(novoArquivo.getSize());
+            doc.setNomeGerado(destino.toString());
+        } catch (IOException e) {
+            throw new RuntimeException("Erro ao substituir arquivo em disco", e);
+        }
+        return documentoRepository.save(doc);
+    }
+
+    @Override
     public List<Documento> listarPorPessoa(Integer idPessoa) {
         return documentoRepository.findByPessoaIdPessoa(idPessoa);
     }

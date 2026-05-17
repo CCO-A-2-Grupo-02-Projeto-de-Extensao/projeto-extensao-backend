@@ -63,6 +63,34 @@ public class DocumentoS3ServiceImpl implements DocumentoService {
     }
 
     @Override
+    public Documento substituir(Integer id, MultipartFile novoArquivo) {
+        Documento doc = buscarPorId(id);
+
+        s3Client.deleteObject(DeleteObjectRequest.builder()
+                .bucket(bucket)
+                .key(doc.getNomeGerado())
+                .build());
+
+        try {
+            String novaChave = "documentos/" + UUID.randomUUID() + "-" + novoArquivo.getOriginalFilename();
+            s3Client.putObject(PutObjectRequest.builder()
+                    .bucket(bucket)
+                    .key(novaChave)
+                    .contentType(novoArquivo.getContentType())
+                    .contentLength(novoArquivo.getSize())
+                    .build(), RequestBody.fromBytes(novoArquivo.getBytes()));
+
+            doc.setNomeOriginal(novoArquivo.getOriginalFilename());
+            doc.setMimeType(novoArquivo.getContentType());
+            doc.setTamanho(novoArquivo.getSize());
+            doc.setNomeGerado(novaChave);
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao substituir arquivo no S3", e);
+        }
+        return documentoRepository.save(doc);
+    }
+
+    @Override
     public List<Documento> listarPorPessoa(Integer idPessoa) {
         return documentoRepository.findByPessoaIdPessoa(idPessoa);
     }

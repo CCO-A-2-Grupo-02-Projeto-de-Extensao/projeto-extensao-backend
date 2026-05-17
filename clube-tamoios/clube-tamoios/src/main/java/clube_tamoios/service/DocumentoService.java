@@ -8,6 +8,8 @@ public interface DocumentoService {
 
     Documento salvar(MultipartFile arquivo, Integer idPessoa);
 
+    Documento substituir(Integer id, MultipartFile novoArquivo);
+
     List<Documento> listarPorPessoa(Integer idPessoa);
 
     Documento buscarPorId(Integer id);
