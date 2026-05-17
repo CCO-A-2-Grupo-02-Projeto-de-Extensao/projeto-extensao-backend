@@ -32,9 +32,9 @@ public class SwaggerConfig {
     public OpenAPI aranduDigitalOpenAPI() {
         return new OpenAPI()
                 .addSecurityItem(new SecurityRequirement().
-                        addList("Bearer Authentication"))
+                        addList("bearerAuth"))
                 .components(new Components().addSecuritySchemes
-                        ("Bearer Authentication", createAPIKeyScheme()))
+                        ("bearerAuth", createAPIKeyScheme()))
                 .info(new Info()
                         .title("Arandu Digital")
                         .description(
