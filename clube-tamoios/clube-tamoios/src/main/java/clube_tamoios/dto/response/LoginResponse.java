@@ -7,6 +7,7 @@ public class LoginResponse {
     private String nomePessoa;
     private String nomeCargo;
     private Boolean ativo;
+    private String token;
 
     public LoginResponse() {}
 
@@ -24,4 +25,7 @@ public class LoginResponse {
 
     public Boolean getAtivo() { return ativo; }
     public void setAtivo(Boolean ativo) { this.ativo = ativo; }
+
+    public String getToken() { return token; }
+    public void setToken(String token) { this.token = token; }
 }

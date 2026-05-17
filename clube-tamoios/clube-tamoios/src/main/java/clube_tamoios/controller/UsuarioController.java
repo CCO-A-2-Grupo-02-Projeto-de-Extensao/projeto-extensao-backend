@@ -1,6 +1,8 @@
 package clube_tamoios.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -27,7 +29,16 @@ public class UsuarioController {
         this.usuarioService = usuarioService;
     }
 
-    @Operation(summary = "Login do desbravador", description = "Autentica um desbravador/usuário no sistema e retorna o token de acesso")
+    @Operation(summary = "Login do desbravador", description = "Autentica um desbravador/usuário no sistema e retorna o token de acesso",
+        requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            content = @Content(examples = @ExampleObject(value = """
+                {
+                  "email": "roberto.costa@clube.com",
+                  "senha": "senha123"
+                }
+                """))
+        )
+    )
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@RequestBody @Valid LoginRequest request) {
         return ResponseEntity.ok(usuarioService.login(request));

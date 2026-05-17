@@ -24,6 +24,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
         // libera rotas públicas (login e swagger)
         if (path.startsWith("/auth") ||
+                path.equals("/usuarios/login") ||
                 path.startsWith("/swagger-ui") ||
                 path.startsWith("/v3/api-docs")) {
 

@@ -5,6 +5,8 @@ import clube_tamoios.dto.response.ComorbidadeResponse;
 import clube_tamoios.mapper.ComorbidadeMapper;
 import clube_tamoios.service.ComorbidadeService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -33,7 +35,13 @@ public class ComorbidadeController {
     }
 
     @PostMapping
-    @Operation(summary = "Cadastrar comorbidade")
+    @Operation(summary = "Cadastrar comorbidade",
+        requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            content = @Content(examples = @ExampleObject(value = """
+                { "nome": "Diabetes Tipo 2" }
+                """))
+        )
+    )
     public ResponseEntity<ComorbidadeResponse> cadastrar(@RequestBody @Valid ComorbidadeCadastroRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ComorbidadeMapper.toResponse(service.cadastrar(request)));

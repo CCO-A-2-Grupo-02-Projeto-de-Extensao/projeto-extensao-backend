@@ -5,6 +5,8 @@ import clube_tamoios.dto.response.MedicamentoResponse;
 import clube_tamoios.mapper.MedicamentoMapper;
 import clube_tamoios.service.MedicamentoService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -33,7 +35,13 @@ public class MedicamentoController {
     }
 
     @PostMapping
-    @Operation(summary = "Cadastrar medicamento")
+    @Operation(summary = "Cadastrar medicamento",
+        requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            content = @Content(examples = @ExampleObject(value = """
+                { "nome": "Ritalina" }
+                """))
+        )
+    )
     public ResponseEntity<MedicamentoResponse> cadastrar(@RequestBody @Valid MedicamentoCadastroRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(MedicamentoMapper.toResponse(service.cadastrar(request)));

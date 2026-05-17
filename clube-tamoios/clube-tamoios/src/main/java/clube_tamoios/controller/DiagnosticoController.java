@@ -6,6 +6,8 @@ import clube_tamoios.dto.response.DiagnosticoResponse;
 import clube_tamoios.mapper.DiagnosticoMapper;
 import clube_tamoios.service.DiagnosticoService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -34,7 +36,16 @@ public class DiagnosticoController {
     }
 
     @PostMapping
-    @Operation(summary = "Adicionar diagnóstico a uma ficha médica")
+    @Operation(summary = "Adicionar diagnóstico a uma ficha médica",
+        requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            content = @Content(examples = @ExampleObject(value = """
+                {
+                  "idFichaMedica": 1,
+                  "idComorbidade": 1
+                }
+                """))
+        )
+    )
     public ResponseEntity<DiagnosticoResponse> cadastrar(@RequestBody @Valid DiagnosticoCadastroRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(DiagnosticoMapper.toResponse(service.cadastrar(request)));

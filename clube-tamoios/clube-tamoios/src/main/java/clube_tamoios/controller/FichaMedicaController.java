@@ -5,6 +5,8 @@ import clube_tamoios.dto.response.FichaMedicaResponse;
 import clube_tamoios.mapper.FichaMedicaMapper;
 import clube_tamoios.service.FichaMedicaService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -31,7 +33,13 @@ public class FichaMedicaController {
     }
 
     @PostMapping
-    @Operation(summary = "Criar ficha médica para uma pessoa")
+    @Operation(summary = "Criar ficha médica para uma pessoa",
+        requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            content = @Content(examples = @ExampleObject(value = """
+                { "idPessoa": 5 }
+                """))
+        )
+    )
     public ResponseEntity<FichaMedicaResponse> criar(@RequestBody @Valid FichaMedicaCadastroRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(FichaMedicaMapper.toResponse(service.criar(request)));

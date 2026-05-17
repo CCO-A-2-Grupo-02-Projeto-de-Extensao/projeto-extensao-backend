@@ -16,6 +16,7 @@ import clube_tamoios.mapper.UsuarioMapper;
 import clube_tamoios.repository.CargoRepository;
 import clube_tamoios.repository.PessoaRepository;
 import clube_tamoios.repository.UsuarioRepository;
+import clube_tamoios.security.JwtUtil;
 
 import java.util.List;
 
@@ -63,7 +64,9 @@ public class UsuarioService {
             throw new CredenciaisInvalidasException("Usuário inativo. Entre em contato com a secretaria.");
         }
 
-        return UsuarioMapper.toLoginResponse(usuario);
+        LoginResponse response = UsuarioMapper.toLoginResponse(usuario);
+        response.setToken(JwtUtil.gerarToken(usuario.getEmail()));
+        return response;
     }
 
     public List<UsuarioResponse> listarAtivos() {

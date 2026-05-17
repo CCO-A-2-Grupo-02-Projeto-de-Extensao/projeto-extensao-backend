@@ -6,8 +6,10 @@ import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
+import io.swagger.v3.oas.models.tags.Tag;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import java.util.List;
 
 /**
  * Configuração do Swagger / OpenAPI.
@@ -44,6 +46,15 @@ public class SwaggerConfig {
                                 .name("Clube Tamoios")
                                 .email("contato@clubetamoios.org")
                         )
-                );
+                )
+                .tags(List.of(
+                        new Tag().name("Desbravadores").description("Login e gerenciamento de usuários"),
+                        new Tag().name("Fichas Médicas").description("Gestão de fichas médicas"),
+                        new Tag().name("Medicações").description("Gestão de medicações das fichas médicas"),
+                        new Tag().name("Diagnósticos").description("Gestão de diagnósticos das fichas médicas"),
+                        new Tag().name("Documentos").description("Upload e gestão de documentos de pessoas"),
+                        new Tag().name("Medicamentos").description("Gestão de medicamentos"),
+                        new Tag().name("Comorbidades").description("Gestão de comorbidades")
+                ));
     }
 }

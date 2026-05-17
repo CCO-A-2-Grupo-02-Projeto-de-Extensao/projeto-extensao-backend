@@ -27,6 +27,7 @@ public class SecurityConfig {
                         // libera login e swagger
                         .requestMatchers(
                                 "/auth/**",
+                                "/usuarios/login",
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**",
                                 "/swagger-ui.html"
