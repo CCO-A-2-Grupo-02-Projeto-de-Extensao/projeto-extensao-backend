@@ -112,9 +112,13 @@ CREATE TABLE IF NOT EXISTS Ocorrencia (
 
 CREATE TABLE IF NOT EXISTS Documento (
     idDocumento INT AUTO_INCREMENT PRIMARY KEY,
-    nome VARCHAR(45) NOT NULL,
-    url VARCHAR(2048) NOT NULL,
     Pessoa_idPessoa INT NOT NULL,
+    nomeOriginal VARCHAR(255) NOT NULL,
+    nomeGerado VARCHAR(255) UNIQUE,
+    mimeType VARCHAR(100) NOT NULL,
+    tamanho BIGINT NOT NULL,
+    dados LONGBLOB,
+    dataUpload DATETIME NOT NULL,
     FOREIGN KEY (Pessoa_idPessoa) REFERENCES Pessoa(idPessoa) ON DELETE CASCADE
 );
 
