@@ -27,6 +27,4 @@ jobs:
         with:
           context: ./clube-tamoios/clube-tamoios
           push: true
-          tags: |
-            pedrobarbosa996/arandu_digital:backend
-            pedrobarbosa996/arandu_digital:backend-${{ github.sha }}
+          tags: pedrobarbosa996/arandu_digital:backend
