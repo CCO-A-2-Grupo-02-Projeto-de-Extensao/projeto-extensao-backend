@@ -1,0 +1,30 @@
+name: Build & Push Docker Image
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'clube-tamoios/clube-tamoios/**'
+
+jobs:
+  build-and-push:
+    name: Build and push backend image
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Login no Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build e push da imagem
+        uses: docker/build-push-action@v5
+        with:
+          context: ./clube-tamoios/clube-tamoios
+          push: true
+          tags: pedrobarbosa996/arandu_digital:backend

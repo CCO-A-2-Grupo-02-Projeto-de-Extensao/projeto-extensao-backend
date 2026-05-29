@@ -1,7 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "Bash(git commit --amend -m 'feat: módulo ficha médica, documentos e storage strategy *)"
-    ]
-  }
-}
