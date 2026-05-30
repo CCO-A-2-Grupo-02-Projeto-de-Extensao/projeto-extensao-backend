@@ -56,6 +56,10 @@ INSERT INTO Usuario (Pessoa_idPessoa, fkCargo, email, senha) VALUES
     (7, 2, 'fernanda.alves@clube.com',  'senha123'),
     (8, 3, 'marcos.pereira@clube.com',  'senha123');
 
+-- Pessoa sem Usuario vinculada (para testes)
+INSERT INTO Pessoa (Classe_idClasse, Genero_idGenero, Unidade_idUnidade, nome, cpf, rg, data_nascimento, telefone, isDesbravador, idResponsavel, fkCargo) VALUES
+    (NULL, 2, 1, 'Pessoa Sem Usuario', '123.456.789-10', '9999999', '1995-07-20', '(11) 99999-9999', FALSE, NULL, 2);
+
 -- Turma
 INSERT INTO Turma (Classe_idClasse, Unidade_idUnidade) VALUES
     (1, 1), (2, 1), (3, 1), (4, 1), (5, 1),
