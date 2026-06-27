@@ -1,5 +1,5 @@
-CREATE DATABASE IF NOT EXISTS bdClubeDesbravadores;
-USE bdClubeDesbravadores;
+CREATE DATABASE IF NOT EXISTS clube_tamoios;
+USE clube_tamoios;
 
 CREATE TABLE IF NOT EXISTS Genero (
     idGenero INT AUTO_INCREMENT PRIMARY KEY,
@@ -98,6 +98,7 @@ CREATE TABLE IF NOT EXISTS Usuario (
     fkCargo INT,
     email VARCHAR(255) NOT NULL UNIQUE,
     senha VARCHAR(255) NOT NULL,
+    ativo BOOLEAN DEFAULT TRUE,
     FOREIGN KEY (Pessoa_idPessoa) REFERENCES Pessoa(idPessoa) ON DELETE CASCADE,
     FOREIGN KEY (fkCargo) REFERENCES Cargo(idCargo) ON DELETE SET NULL
 );
