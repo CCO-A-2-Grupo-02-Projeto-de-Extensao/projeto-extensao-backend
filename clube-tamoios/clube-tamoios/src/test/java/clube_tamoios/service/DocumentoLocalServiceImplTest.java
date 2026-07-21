@@ -59,7 +59,7 @@ class DocumentoLocalServiceImplTest {
         when(pessoaRepository.findById(1)).thenReturn(Optional.of(pessoa));
         when(documentoRepository.save(any(Documento.class))).thenAnswer(inv -> inv.getArgument(0));
 
-        Documento resultado = service.salvar(arquivo, 1);
+        Documento resultado = service.salvar(arquivo, 1, "laudo");
 
         assertThat(resultado.getDados()).isNull();
         assertThat(resultado.getNomeGerado()).isNotBlank();
@@ -72,7 +72,7 @@ class DocumentoLocalServiceImplTest {
         when(pessoaRepository.findById(1)).thenReturn(Optional.of(pessoa));
         when(documentoRepository.save(any(Documento.class))).thenAnswer(inv -> inv.getArgument(0));
 
-        Documento resultado = service.salvar(arquivo, 1);
+        Documento resultado = service.salvar(arquivo, 1, "laudo");
 
         byte[] conteudoDisco = Files.readAllBytes(Path.of(resultado.getNomeGerado()));
         assertThat(conteudoDisco).isEqualTo("conteudo do arquivo".getBytes());
@@ -82,7 +82,7 @@ class DocumentoLocalServiceImplTest {
     void salvar_deveLancarExcecao_quandoPessoaNaoEncontrada() {
         when(pessoaRepository.findById(99)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> service.salvar(arquivo, 99))
+        assertThatThrownBy(() -> service.salvar(arquivo, 99, "laudo"))
                 .isInstanceOf(EntidadeNaoEncontradaException.class)
                 .hasMessageContaining("99");
     }

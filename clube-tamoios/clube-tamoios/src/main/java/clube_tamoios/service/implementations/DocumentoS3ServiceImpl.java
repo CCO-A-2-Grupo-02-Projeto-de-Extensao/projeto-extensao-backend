@@ -41,11 +41,11 @@ public class DocumentoS3ServiceImpl implements DocumentoService {
     }
 
     @Override
-    public Documento salvar(MultipartFile arquivo, Integer idPessoa) {
+    public Documento salvar(MultipartFile arquivo, Integer idPessoa, String tipo) {
         Pessoa pessoa = pessoaRepository.findById(idPessoa)
                 .orElseThrow(() -> new EntidadeNaoEncontradaException("Pessoa não encontrada: " + idPessoa));
 
-        Documento doc = DocumentoMapper.toEntity(arquivo, pessoa);
+        Documento doc = DocumentoMapper.toEntity(arquivo, pessoa, tipo);
         String chave = "documentos/" + UUID.randomUUID() + "-" + arquivo.getOriginalFilename();
 
         PutObjectRequest request = PutObjectRequest.builder()

@@ -5,7 +5,7 @@ INSERT INTO Genero (nome) VALUES ('Masculino'), ('Feminino');
 
 -- Classe
 INSERT INTO Classe (nome) VALUES
-    ('Amigo'), ('Companheiro'), ('Pesquisador'), ('Pioneiro'), ('Guia');
+    ('Amigo'), ('Companheiro'), ('Pesquisador'), ('Pioneiro'), ('Guia'), ('Excursionista');
 
 -- Especialidade
 INSERT INTO Especialidade (nome, descricao) VALUES
@@ -15,7 +15,7 @@ INSERT INTO Especialidade (nome, descricao) VALUES
 
 -- Cargo
 INSERT INTO Cargo (Nome) VALUES
-    ('Diretor'), ('Secretário'), ('Tesoureiro'), ('Desbravador');
+    ('Diretor'), ('Secretário'), ('Tesoureiro'), ('Desbravador'), ('Instrutor');
 
 -- Unidade
 INSERT INTO Unidade (nome, Genero_idGenero) VALUES

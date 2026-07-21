@@ -82,7 +82,7 @@ class DocumentoMapperTest {
         byte[] conteudo = "conteudo do arquivo de teste".getBytes();
         MockMultipartFile arquivo = new MockMultipartFile("arquivo", "laudo.pdf", "application/pdf", conteudo);
 
-        Documento doc = DocumentoMapper.toEntity(arquivo, pessoa);
+        Documento doc = DocumentoMapper.toEntity(arquivo, pessoa, "laudo");
 
         assertThat(doc.getNomeOriginal()).isEqualTo("laudo.pdf");
         assertThat(doc.getMimeType()).isEqualTo("application/pdf");

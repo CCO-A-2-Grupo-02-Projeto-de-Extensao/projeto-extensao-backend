@@ -3,11 +3,11 @@ INSERT IGNORE INTO Genero (idGenero, nome) VALUES (1, 'Masculino'), (2, 'Feminin
 
 -- Classe
 INSERT IGNORE INTO Classe (idClasse, nome) VALUES
-    (1, 'Amigo'), (2, 'Companheiro'), (3, 'Pesquisador'), (4, 'Pioneiro'), (5, 'Guia');
+    (1, 'Amigo'), (2, 'Companheiro'), (3, 'Pesquisador'), (4, 'Pioneiro'), (5, 'Guia'), (6, 'Excursionista');
 
 -- Cargo
 INSERT IGNORE INTO Cargo (idCargo, Nome) VALUES
-    (1, 'Diretor'), (2, 'Secretário'), (3, 'Tesoureiro'), (4, 'Desbravador');
+    (1, 'Diretor'), (2, 'Secretário'), (3, 'Tesoureiro'), (4, 'Desbravador'), (5, 'Instrutor');
 
 -- Unidade
 INSERT IGNORE INTO Unidade (idUnidade, nome, Genero_idGenero) VALUES

@@ -66,7 +66,7 @@ class DocumentoControllerTest {
         MockMultipartFile arquivo = new MockMultipartFile(
                 "arquivo", "laudo.pdf", "application/pdf", "conteudo".getBytes());
 
-        when(documentoService.salvar(any(), eq(1))).thenReturn(documento);
+        when(documentoService.salvar(any(), eq(1), any())).thenReturn(documento);
 
         mockMvc.perform(multipart("/documentos")
                         .file(arquivo)

@@ -6,7 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface DocumentoService {
 
-    Documento salvar(MultipartFile arquivo, Integer idPessoa);
+    Documento salvar(MultipartFile arquivo, Integer idPessoa, String tipo);
 
     Documento substituir(Integer id, MultipartFile novoArquivo);
 

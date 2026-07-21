@@ -61,7 +61,7 @@ class DocumentoBancoServiceImplTest {
         when(pessoaRepository.findById(1)).thenReturn(Optional.of(pessoa));
         when(documentoRepository.save(any(Documento.class))).thenReturn(documento);
 
-        Documento resultado = service.salvar(arquivo, 1);
+        Documento resultado = service.salvar(arquivo, 1, "laudo");
 
         assertThat(resultado).isNotNull();
         assertThat(resultado.getNomeOriginal()).isEqualTo("laudo.pdf");
@@ -74,7 +74,7 @@ class DocumentoBancoServiceImplTest {
     void salvar_deveLancarExcecao_quandoPessoaNaoEncontrada() {
         when(pessoaRepository.findById(99)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> service.salvar(arquivo, 99))
+        assertThatThrownBy(() -> service.salvar(arquivo, 99, "laudo"))
                 .isInstanceOf(EntidadeNaoEncontradaException.class)
                 .hasMessageContaining("99");
     }

@@ -25,6 +25,9 @@ public class Documento {
     @JoinColumn(name = "Pessoa_idPessoa", nullable = false)
     private Pessoa pessoa;
 
+    @Column(length = 45)
+    private String tipo;
+
     @Column(nullable = false)
     private String nomeOriginal;
 
@@ -59,6 +62,14 @@ public class Documento {
 
     public void setPessoa(Pessoa pessoa) {
         this.pessoa = pessoa;
+    }
+
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
     }
 
     public String getNomeOriginal() {

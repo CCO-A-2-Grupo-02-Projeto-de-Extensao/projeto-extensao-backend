@@ -11,6 +11,7 @@ public class DocumentoMapper {
     public static DocumentoResponse toResponse(Documento entity) {
         DocumentoResponse dto = new DocumentoResponse();
         dto.setId(entity.getId());
+        dto.setTipo(entity.getTipo());
         dto.setNomeOriginal(entity.getNomeOriginal());
         dto.setMimeType(entity.getMimeType());
         dto.setTamanho(entity.getTamanho());
@@ -26,10 +27,11 @@ public class DocumentoMapper {
         return entities.stream().map(DocumentoMapper::toResponse).toList();
     }
 
-    public static Documento toEntity(MultipartFile arquivo, Pessoa pessoa) {
+    public static Documento toEntity(MultipartFile arquivo, Pessoa pessoa, String tipo) {
         try {
             Documento doc = new Documento();
             doc.setPessoa(pessoa);
+            doc.setTipo(tipo);
             doc.setNomeOriginal(arquivo.getOriginalFilename());
             doc.setMimeType(arquivo.getContentType());
             doc.setTamanho(arquivo.getSize());

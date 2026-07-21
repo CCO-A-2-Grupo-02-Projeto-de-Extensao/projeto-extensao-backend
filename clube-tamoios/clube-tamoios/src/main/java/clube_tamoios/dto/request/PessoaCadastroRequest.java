@@ -1,99 +1,38 @@
-package clube_tamoios.entity;
+package clube_tamoios.dto.request;
 
-import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 
-@Entity
-@Table(name = "Pessoa")
-public class Pessoa {
+public class PessoaCadastroRequest {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idPessoa")
-    private Integer idPessoa;
-
-    @ManyToOne
-    @JoinColumn(name = "Classe_idClasse")
-    private Classe classe;
-
-    @ManyToOne
-    @JoinColumn(name = "Genero_idGenero")
-    private Genero genero;
-
-    @ManyToOne
-    @JoinColumn(name = "Unidade_idUnidade")
-    private Unidade unidade;
-
-    @Column(length = 45)
+    @NotBlank(message = "O nome é obrigatório")
     private String nome;
 
-    @Column(length = 45)
     private String cpf;
-
-    @Column(length = 45)
     private String rg;
 
-    @Column(name = "data_nascimento", length = 45)
+    @NotBlank(message = "A data de nascimento é obrigatória")
     private String dataNascimento;
 
-    @Column(length = 45)
     private String telefone;
-
-    @Column(name = "isDesbravador")
     private Boolean isDesbravador;
 
-    @Column(name = "idResponsavel")
-    private Integer idResponsavel;
+    private Integer idClasse;
+    private Integer idGenero;
+    private Integer idUnidade;
+    private Integer idCargo;
 
-    @ManyToOne
-    @JoinColumn(name = "fkCargo")
-    private Cargo cargo;
-
-    @Column(nullable = false, columnDefinition = "TINYINT(1) DEFAULT 1")
-    private Boolean ativo = true;
-
-    @Column(length = 150)
     private String escola;
-
-    @Column(name = "serie_escolar", length = 45)
     private String serieEscolar;
 
-    @Column(name = "nome_responsavel1", length = 100)
     private String nomeResponsavel1;
-
-    @Column(name = "telefone_responsavel1", length = 20)
     private String telefoneResponsavel1;
-
-    @Column(name = "rg_responsavel1", length = 20)
     private String rgResponsavel1;
-
-    @Column(name = "cpf_responsavel1", length = 14)
     private String cpfResponsavel1;
 
-    @Column(name = "nome_responsavel2", length = 100)
     private String nomeResponsavel2;
-
-    @Column(name = "telefone_responsavel2", length = 20)
     private String telefoneResponsavel2;
-
-    @Column(name = "rg_responsavel2", length = 20)
     private String rgResponsavel2;
-
-    @Column(name = "cpf_responsavel2", length = 14)
     private String cpfResponsavel2;
-
-    public Pessoa() {}
-
-    public Integer getIdPessoa() { return idPessoa; }
-    public void setIdPessoa(Integer idPessoa) { this.idPessoa = idPessoa; }
-
-    public Classe getClasse() { return classe; }
-    public void setClasse(Classe classe) { this.classe = classe; }
-
-    public Genero getGenero() { return genero; }
-    public void setGenero(Genero genero) { this.genero = genero; }
-
-    public Unidade getUnidade() { return unidade; }
-    public void setUnidade(Unidade unidade) { this.unidade = unidade; }
 
     public String getNome() { return nome; }
     public void setNome(String nome) { this.nome = nome; }
@@ -110,21 +49,20 @@ public class Pessoa {
     public String getTelefone() { return telefone; }
     public void setTelefone(String telefone) { this.telefone = telefone; }
 
-    public Boolean getDesbravador() {
-        return isDesbravador;
-    }
-    public void setDesbravador(Boolean desbravador) {
-        isDesbravador = desbravador;
-    }
+    public Boolean getIsDesbravador() { return isDesbravador; }
+    public void setIsDesbravador(Boolean isDesbravador) { this.isDesbravador = isDesbravador; }
 
-    public Integer getIdResponsavel() { return idResponsavel; }
-    public void setIdResponsavel(Integer idResponsavel) { this.idResponsavel = idResponsavel; }
+    public Integer getIdClasse() { return idClasse; }
+    public void setIdClasse(Integer idClasse) { this.idClasse = idClasse; }
 
-    public Cargo getCargo() { return cargo; }
-    public void setCargo(Cargo cargo) { this.cargo = cargo; }
+    public Integer getIdGenero() { return idGenero; }
+    public void setIdGenero(Integer idGenero) { this.idGenero = idGenero; }
 
-    public Boolean getAtivo() { return ativo; }
-    public void setAtivo(Boolean ativo) { this.ativo = ativo; }
+    public Integer getIdUnidade() { return idUnidade; }
+    public void setIdUnidade(Integer idUnidade) { this.idUnidade = idUnidade; }
+
+    public Integer getIdCargo() { return idCargo; }
+    public void setIdCargo(Integer idCargo) { this.idCargo = idCargo; }
 
     public String getEscola() { return escola; }
     public void setEscola(String escola) { this.escola = escola; }

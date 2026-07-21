@@ -39,8 +39,9 @@ public class DocumentoController {
     @Operation(summary = "Fazer upload de documento para uma pessoa")
     public ResponseEntity<DocumentoResponse> upload(
             @RequestParam("arquivo") MultipartFile arquivo,
-            @RequestParam("idPessoa") Integer idPessoa) {
-        Documento salvo = documentoService.salvar(arquivo, idPessoa);
+            @RequestParam("idPessoa") Integer idPessoa,
+            @RequestParam(value = "tipo", required = false) String tipo) {
+        Documento salvo = documentoService.salvar(arquivo, idPessoa, tipo);
         return ResponseEntity.status(HttpStatus.CREATED).body(DocumentoMapper.toResponse(salvo));
     }
 

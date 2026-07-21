@@ -7,6 +7,7 @@ public class DocumentoResponse {
     private Integer id;
     private Integer idPessoa;
     private String nomePessoa;
+    private String tipo;
     private String nomeOriginal;
     private String mimeType;
     private Long tamanho;
@@ -34,6 +35,14 @@ public class DocumentoResponse {
 
     public void setNomePessoa(String nomePessoa) {
         this.nomePessoa = nomePessoa;
+    }
+
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
     }
 
     public String getNomeOriginal() {
