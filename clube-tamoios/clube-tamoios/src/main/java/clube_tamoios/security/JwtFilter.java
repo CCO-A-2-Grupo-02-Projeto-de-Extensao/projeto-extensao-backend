@@ -10,7 +10,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.Collections;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 public class JwtFilter extends OncePerRequestFilter {
 
@@ -19,20 +19,6 @@ public class JwtFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain)
             throws ServletException, IOException {
-
-        String origin = request.getHeader("Origin");
-        if (origin != null && !origin.isBlank()) {
-            response.setHeader("Access-Control-Allow-Origin", origin);
-            response.setHeader("Vary", "Origin");
-            response.setHeader("Access-Control-Allow-Credentials", "true");
-            response.setHeader("Access-Control-Allow-Headers", "*");
-            response.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,PATCH,OPTIONS");
-        }
-
-        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
-            response.setStatus(HttpServletResponse.SC_OK);
-            return;
-        }
 
         String path = request.getServletPath();
 
@@ -57,14 +43,14 @@ public class JwtFilter extends OncePerRequestFilter {
 
         try {
             // valida o token
-            JwtUtil.validarToken(token);
+                String username = JwtUtil.validarToken(token);
+                String role = JwtUtil.extrairRole(token);
 
-            // vai autenticar no spring
             UsernamePasswordAuthenticationToken auth =
                     new UsernamePasswordAuthenticationToken(
+                        username,
                             null,
-                            null,
-                            Collections.emptyList()
+                        java.util.List.of(new SimpleGrantedAuthority("ROLE_" + role))
                     );
 
             SecurityContextHolder.getContext().setAuthentication(auth);

@@ -57,11 +57,10 @@ INSERT INTO Pessoa (Classe_idClasse, Genero_idGenero, Unidade_idUnidade, nome, c
     (NULL, 2, 1, 'Fernanda Alves', '777.777.777-77', '7777777', '1990-08-25', '(11) 97777-7777', FALSE, NULL, 2),
     (NULL, 1, 2, 'Marcos Pereira', '888.888.888-88', '8888888', '1988-12-03', '(11) 98888-8888', FALSE, NULL, 3);
 
--- Usuario (senha em texto puro conforme a aplicação atual)
 INSERT INTO Usuario (Pessoa_idPessoa, fkCargo, email, senha) VALUES
-    (6, 1, 'roberto.costa@clube.com',   'senha123'),
-    (7, 2, 'fernanda.alves@clube.com',  'senha123'),
-    (8, 3, 'marcos.pereira@clube.com',  'senha123');
+    (6, 1, 'roberto.costa@clube.com',   '$2a$10$DBFC490wr.eMeDvHOSmB7O0fOroyVLsy4qxmcThxcYKpfUfLhtlbO'),
+    (7, 2, 'fernanda.alves@clube.com',  '$2a$10$DBFC490wr.eMeDvHOSmB7O0fOroyVLsy4qxmcThxcYKpfUfLhtlbO'),
+    (8, 3, 'marcos.pereira@clube.com',  '$2a$10$DBFC490wr.eMeDvHOSmB7O0fOroyVLsy4qxmcThxcYKpfUfLhtlbO');
 
 -- Pessoa sem Usuario vinculada (para testes)
 INSERT INTO Pessoa (Classe_idClasse, Genero_idGenero, Unidade_idUnidade, nome, cpf, rg, data_nascimento, telefone, isDesbravador, idResponsavel, fkCargo) VALUES

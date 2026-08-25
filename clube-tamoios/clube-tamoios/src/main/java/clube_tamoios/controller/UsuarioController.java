@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -34,7 +35,7 @@ public class UsuarioController {
             content = @Content(examples = @ExampleObject(value = """
                 {
                   "email": "roberto.costa@clube.com",
-                  "senha": "senha123"
+                  "senha": "sua-senha"
                 }
                 """))
         )
@@ -46,12 +47,14 @@ public class UsuarioController {
 
     @Operation(summary = "Cadastrar desbravador", description = "Registra um novo desbravador no sistema Arandu Digital")
     @PostMapping
+    @PreAuthorize("hasAnyRole('DIRETOR', 'SECRETARIO')")
     public ResponseEntity<UsuarioResponse> cadastrar(@RequestBody @Valid UsuarioCadastroRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(usuarioService.cadastrar(request));
     }
 
     @Operation(summary = "Listar desbravadores ativos", description = "Retorna a lista de todos os desbravadores com status ativo")
     @GetMapping
+    @PreAuthorize("hasAnyRole('DIRETOR', 'SECRETARIO')")
     public ResponseEntity<List<UsuarioResponse>> listarAtivos() {
         List<UsuarioResponse> usuarios = usuarioService.listarAtivos();
         if (usuarios.isEmpty()) {
@@ -62,6 +65,7 @@ public class UsuarioController {
 
     @Operation(summary = "Listar todos os desbravadores", description = "Retorna a lista completa de desbravadores, incluindo os inativos")
     @GetMapping("/todos")
+    @PreAuthorize("hasAnyRole('DIRETOR', 'SECRETARIO')")
     public ResponseEntity<List<UsuarioResponse>> listarTodos() {
         List<UsuarioResponse> usuarios = usuarioService.listarTodos();
         if (usuarios.isEmpty()) {
@@ -72,12 +76,14 @@ public class UsuarioController {
 
     @Operation(summary = "Buscar desbravador por ID", description = "Retorna os dados de um desbravador específico pelo seu ID")
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('DIRETOR', 'SECRETARIO')")
     public ResponseEntity<UsuarioResponse> buscarPorId(@PathVariable Integer id) {
         return ResponseEntity.ok(usuarioService.buscarPorId(id));
     }
 
     @Operation(summary = "Atualizar dados do desbravador", description = "Atualiza as informações cadastrais de um desbravador")
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('DIRETOR', 'SECRETARIO')")
     public ResponseEntity<UsuarioResponse> atualizar(
             @PathVariable Integer id,
             @RequestBody @Valid UsuarioAtualizacaoRequest request) {
@@ -86,6 +92,7 @@ public class UsuarioController {
 
     @Operation(summary = "Desativar desbravador", description = "Desativa o cadastro de um desbravador sem excluí-lo do sistema")
     @PatchMapping("/{id}/desativar")
+    @PreAuthorize("hasAnyRole('DIRETOR', 'SECRETARIO')")
     public ResponseEntity<Void> desativar(@PathVariable Integer id) {
         usuarioService.desativar(id);
         return ResponseEntity.noContent().build();
@@ -93,6 +100,7 @@ public class UsuarioController {
 
     @Operation(summary = "Excluir desbravador", description = "Remove permanentemente o cadastro de um desbravador do sistema")
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('DIRETOR', 'SECRETARIO')")
     public ResponseEntity<Void> deletar(@PathVariable Integer id) {
         usuarioService.deletar(id);
         return ResponseEntity.noContent().build();

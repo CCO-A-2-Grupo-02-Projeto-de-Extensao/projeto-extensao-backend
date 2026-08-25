@@ -1,23 +1,23 @@
 package clube_tamoios.controller;
 
-import clube_tamoios.security.JwtUtil;
+import clube_tamoios.dto.request.LoginRequest;
+import clube_tamoios.dto.response.LoginResponse;
+import clube_tamoios.service.UsuarioService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
 
+    private final UsuarioService usuarioService;
+
+    public AuthController(UsuarioService usuarioService) {
+        this.usuarioService = usuarioService;
+    }
+
     @PostMapping("/login")
-    public String login(@RequestBody Map<String, String> dados) {
-
-        if ("admin".equals(dados.get("username")) &&
-                "123".equals(dados.get("password"))) {
-
-            return JwtUtil.gerarToken(dados.get("username"));
-        }
-
-        throw new RuntimeException("Login inválido");
+    public LoginResponse login(@RequestBody @Valid LoginRequest request) {
+        return usuarioService.login(request);
     }
 }

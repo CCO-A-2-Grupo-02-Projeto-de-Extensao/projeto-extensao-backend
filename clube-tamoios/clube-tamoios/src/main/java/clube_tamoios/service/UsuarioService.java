@@ -19,6 +19,7 @@ import clube_tamoios.repository.UsuarioRepository;
 import clube_tamoios.security.JwtUtil;
 
 import java.util.List;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Service
 public class UsuarioService {
@@ -26,13 +27,16 @@ public class UsuarioService {
     private final UsuarioRepository usuarioRepository;
     private final PessoaRepository pessoaRepository;
     private final CargoRepository cargoRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public UsuarioService(UsuarioRepository usuarioRepository,
                           PessoaRepository pessoaRepository,
-                          CargoRepository cargoRepository) {
+                          CargoRepository cargoRepository,
+                          PasswordEncoder passwordEncoder) {
         this.usuarioRepository = usuarioRepository;
         this.pessoaRepository = pessoaRepository;
         this.cargoRepository = cargoRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public UsuarioResponse cadastrar(UsuarioCadastroRequest request) {
@@ -50,23 +54,34 @@ public class UsuarioService {
         usuario.setPessoa(pessoa);
         usuario.setCargo(cargo);
         usuario.setEmail(request.getEmail());
-        usuario.setSenha(request.getSenha());
+        usuario.setSenha(passwordEncoder.encode(request.getSenha()));
         usuario.setAtivo(true);
 
         return UsuarioMapper.toResponse(usuarioRepository.save(usuario));
     }
 
     public LoginResponse login(LoginRequest request) {
-        Usuario usuario = usuarioRepository.findByEmailAndSenha(request.getEmail(), request.getSenha())
+        Usuario usuario = usuarioRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new CredenciaisInvalidasException("E-mail ou senha inválidos"));
+
+        if (!passwordEncoder.matches(request.getSenha(), usuario.getSenha())) {
+            throw new CredenciaisInvalidasException("E-mail ou senha inválidos");
+        }
 
         if (!usuario.getAtivo()) {
             throw new CredenciaisInvalidasException("Usuário inativo. Entre em contato com a secretaria.");
         }
 
         LoginResponse response = UsuarioMapper.toLoginResponse(usuario);
-        response.setToken(JwtUtil.gerarToken(usuario.getEmail()));
+        response.setToken(JwtUtil.gerarToken(usuario.getEmail(), normalizarCargo(usuario.getCargo().getNome())));
         return response;
+    }
+
+    private String normalizarCargo(String cargo) {
+        return java.text.Normalizer.normalize(cargo, java.text.Normalizer.Form.NFD)
+                .replaceAll("\\p{M}", "")
+                .toUpperCase(java.util.Locale.ROOT)
+                .replaceAll("[^A-Z0-9_]", "_");
     }
 
     public List<UsuarioResponse> listarAtivos() {
@@ -106,7 +121,7 @@ public class UsuarioService {
         usuario.setCargo(cargo);
 
         if (request.getSenha() != null && !request.getSenha().isBlank()) {
-            usuario.setSenha(request.getSenha());
+            usuario.setSenha(passwordEncoder.encode(request.getSenha()));
         }
 
         return UsuarioMapper.toResponse(usuarioRepository.save(usuario));

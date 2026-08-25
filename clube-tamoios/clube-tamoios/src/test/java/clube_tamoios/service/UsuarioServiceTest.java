@@ -20,6 +20,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 import java.util.Optional;
@@ -40,6 +41,9 @@ class UsuarioServiceTest {
     @Mock
     private CargoRepository cargoRepository;
 
+    @Mock
+    private PasswordEncoder passwordEncoder;
+
     @InjectMocks
     private UsuarioService service;
 
@@ -54,7 +58,7 @@ class UsuarioServiceTest {
         Usuario u = new Usuario();
         u.setIdUsuario(1);
         u.setEmail("joao@clube.com");
-        u.setSenha("senha123");
+        u.setSenha("$2a$10$DBFC490wr.eMeDvHOSmB7O0fOroyVLsy4qxmcThxcYKpfUfLhtlbO");
         u.setAtivo(true);
         u.setPessoa(pessoa);
         u.setCargo(cargo);
@@ -128,8 +132,9 @@ class UsuarioServiceTest {
         request.setEmail("joao@clube.com");
         request.setSenha("senha123");
 
-        when(usuarioRepository.findByEmailAndSenha(request.getEmail(), request.getSenha()))
+        when(usuarioRepository.findByEmail(request.getEmail()))
                 .thenReturn(Optional.of(usuarioAtivo()));
+        when(passwordEncoder.matches(request.getSenha(), usuarioAtivo().getSenha())).thenReturn(true);
 
         LoginResponse response = service.login(request);
 
@@ -145,7 +150,7 @@ class UsuarioServiceTest {
         request.setEmail("x@clube.com");
         request.setSenha("errada");
 
-        when(usuarioRepository.findByEmailAndSenha(any(), any())).thenReturn(Optional.empty());
+        when(usuarioRepository.findByEmail(any())).thenReturn(Optional.empty());
 
         assertThrows(CredenciaisInvalidasException.class, () -> service.login(request));
     }
@@ -158,9 +163,10 @@ class UsuarioServiceTest {
 
         LoginRequest request = new LoginRequest();
         request.setEmail(inativo.getEmail());
-        request.setSenha(inativo.getSenha());
+        request.setSenha("senha123");
 
-        when(usuarioRepository.findByEmailAndSenha(any(), any())).thenReturn(Optional.of(inativo));
+        when(usuarioRepository.findByEmail(any())).thenReturn(Optional.of(inativo));
+        when(passwordEncoder.matches(request.getSenha(), inativo.getSenha())).thenReturn(true);
 
         assertThrows(CredenciaisInvalidasException.class, () -> service.login(request));
     }

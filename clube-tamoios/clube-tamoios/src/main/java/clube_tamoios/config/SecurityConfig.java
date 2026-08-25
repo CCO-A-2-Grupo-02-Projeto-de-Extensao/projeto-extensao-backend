@@ -3,6 +3,7 @@ package clube_tamoios.config;
 import clube_tamoios.security.JwtFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -13,7 +14,13 @@ import java.util.Arrays;
 import org.springframework.http.HttpMethod;
 
 @Configuration
+@EnableMethodSecurity
 public class SecurityConfig {
+
+        @Bean
+        public org.springframework.security.crypto.password.PasswordEncoder passwordEncoder() {
+                return new org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder();
+        }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
@@ -24,8 +31,8 @@ public class SecurityConfig {
                 "http://26.150.199.57:*"
         ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("*"));
-        configuration.setAllowCredentials(true);
+        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Accept", "Origin"));
+        configuration.setAllowCredentials(false);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
@@ -37,7 +44,10 @@ public class SecurityConfig {
 
         return http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .csrf(csrf -> csrf.disable())
+                                .csrf(csrf -> csrf.requireCsrfProtectionMatcher(request -> {
+                                        String authorization = request.getHeader("Authorization");
+                                        return authorization == null || !authorization.startsWith("Bearer ");
+                                }))
 
                 // tirei a sessão porque o JWT não usa pelo que eu entendi
                 .sessionManagement(session ->

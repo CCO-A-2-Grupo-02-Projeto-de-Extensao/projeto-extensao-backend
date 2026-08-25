@@ -35,9 +35,9 @@ INSERT IGNORE INTO Pessoa (idPessoa, Classe_idClasse, Genero_idGenero, Unidade_i
 
 -- Usuario
 INSERT IGNORE INTO Usuario (idUsuario, Pessoa_idPessoa, fkCargo, email, senha, ativo) VALUES
-    (1, 6, 1, 'roberto.costa@clube.com',  'senha123', TRUE),
-    (2, 7, 2, 'fernanda.alves@clube.com', 'senha123', TRUE),
-    (3, 8, 3, 'marcos.pereira@clube.com', 'senha123', TRUE);
+    (1, 6, 1, 'roberto.costa@clube.com',  '$2a$10$DBFC490wr.eMeDvHOSmB7O0fOroyVLsy4qxmcThxcYKpfUfLhtlbO', TRUE),
+    (2, 7, 2, 'fernanda.alves@clube.com', '$2a$10$DBFC490wr.eMeDvHOSmB7O0fOroyVLsy4qxmcThxcYKpfUfLhtlbO', TRUE),
+    (3, 8, 3, 'marcos.pereira@clube.com', '$2a$10$DBFC490wr.eMeDvHOSmB7O0fOroyVLsy4qxmcThxcYKpfUfLhtlbO', TRUE);
 
 -- Ficha_medica
 INSERT IGNORE INTO Ficha_medica (idFichaMedica, Pessoa_idPessoa) VALUES

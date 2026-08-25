@@ -3,34 +3,36 @@ package clube_tamoios.security;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import java.security.Key;
+import java.nio.charset.StandardCharsets;
+import java.security.SecureRandom;
 import java.util.Date;
 
 public class JwtUtil {
 
-    // Em produção o segredo vem da variável de ambiente JWT_SECRET, injetada pelo
-    // script de infraestrutura. O valor abaixo serve só para rodar localmente sem
-    // precisar configurar nada.
-    private static final String SECRET_PADRAO_DEV =
-            "dev-local-somente-nao-usar-em-producao-1234567890";
-
     private static final String SECRET = resolverSecret();
 
-    private static final Key KEY = Keys.hmacShaKeyFor(SECRET.getBytes());
+        private static final Key KEY = Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8));
 
     private static String resolverSecret() {
         String env = System.getenv("JWT_SECRET");
         if (env != null && !env.isBlank()) {
             return env;
         }
-        System.err.println("AVISO: JWT_SECRET não definido, usando o segredo de desenvolvimento");
-        return SECRET_PADRAO_DEV;
+        byte[] segredo = new byte[32];
+        new SecureRandom().nextBytes(segredo);
+        return java.util.Base64.getEncoder().encodeToString(segredo);
     }
 
     public static String gerarToken(String username) {
+        return gerarToken(username, "DIRETOR");
+    }
+
+    public static String gerarToken(String username, String role) {
         return Jwts.builder()
                 .setSubject(username)
+                .claim("role", role)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 86400000)) // 1 dia
+                .setExpiration(new Date(System.currentTimeMillis() + 3600000))
                 .signWith(KEY)
                 .compact();
     }
@@ -42,5 +44,11 @@ public class JwtUtil {
                 .parseClaimsJws(token)
                 .getBody()
                 .getSubject();
+    }
+
+    public static String extrairRole(String token) {
+        Object role = Jwts.parserBuilder().setSigningKey(KEY).build()
+                .parseClaimsJws(token).getBody().get("role");
+        return role instanceof String ? (String) role : "DESBRAVADOR";
     }
 }
