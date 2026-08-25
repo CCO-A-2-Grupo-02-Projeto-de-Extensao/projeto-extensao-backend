@@ -115,6 +115,37 @@ public class PessoaService {
 
     // Desativar/reativar a Pessoa também alterna o Usuario vinculado (se
     // existir), já que perder o cadastro ativo deve derrubar o login também.
+    // Vincular/desvincular sem passar pelo PessoaCadastroRequest inteiro: a tela
+    // de classe só mexe nesse campo, e exigir o formulário completo faria a
+    // remoção depender de dados que a tela não tem em mãos.
+    public Pessoa definirClasse(Integer idPessoa, Integer idClasse) {
+        Pessoa pessoa = buscarPorId(idPessoa);
+
+        if (idClasse == null) {
+            pessoa.setClasse(null);
+        } else {
+            pessoa.setClasse(classeRepository.findById(idClasse)
+                    .orElseThrow(() -> new EntidadeNaoEncontradaException(
+                            "Classe não encontrada: " + idClasse)));
+        }
+
+        return pessoaRepository.save(pessoa);
+    }
+
+    public Pessoa definirUnidade(Integer idPessoa, Integer idUnidade) {
+        Pessoa pessoa = buscarPorId(idPessoa);
+
+        if (idUnidade == null) {
+            pessoa.setUnidade(null);
+        } else {
+            pessoa.setUnidade(unidadeRepository.findById(idUnidade)
+                    .orElseThrow(() -> new EntidadeNaoEncontradaException(
+                            "Unidade não encontrada: " + idUnidade)));
+        }
+
+        return pessoaRepository.save(pessoa);
+    }
+
     public void desativar(Integer id) {
         Pessoa pessoa = buscarPorId(id);
         pessoa.setAtivo(false);

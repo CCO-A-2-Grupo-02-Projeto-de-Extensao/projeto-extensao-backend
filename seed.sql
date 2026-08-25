@@ -8,19 +8,26 @@ INSERT INTO Classe (nome) VALUES
     ('Amigo'), ('Companheiro'), ('Pesquisador'), ('Pioneiro'), ('Guia'), ('Excursionista');
 
 -- Especialidade
-INSERT INTO Especialidade (nome, descricao) VALUES
-    ('Primeiros Socorros', 'Técnicas básicas de primeiros socorros'),
-    ('Astronomia', 'Estudo dos corpos celestes'),
-    ('Culinária', 'Preparo de alimentos ao ar livre');
+INSERT INTO Especialidade (nome, categoria, descricao) VALUES
+    ('Primeiros Socorros', 'Atividades Recreativas (AR)', 'Técnicas básicas de primeiros socorros'),
+    ('Astronomia', 'Estudos da Natureza (EN)', 'Estudo dos corpos celestes'),
+    ('Culinária', 'Habilidades Domésticas (HD)', 'Preparo de alimentos ao ar livre'),
+    ('Nós e Amarras', 'Artes Manuais (AM)', 'Amarras e nós usados em acampamento'),
+    ('Sementes', 'Estudos da Natureza (EN)', 'Identificação e germinação de sementes'),
+    ('Reciclagem', 'Estudos da Natureza (EN)', 'Separação de resíduos e destino correto'),
+    ('Música', 'Atividades Espirituais (AE)', 'Fundamentos musicais aplicados ao clube'),
+    ('Natação', 'Atividades Recreativas (AR)', 'Habilidades básicas de natação');
 
 -- Cargo
 INSERT INTO Cargo (Nome) VALUES
     ('Diretor'), ('Secretário'), ('Tesoureiro'), ('Desbravador'), ('Instrutor');
 
 -- Unidade
-INSERT INTO Unidade (nome, Genero_idGenero) VALUES
-    ('Unidade Tamoios', 1),
-    ('Unidade Arandu', 2);
+INSERT INTO Unidade (nome, Genero_idGenero, faixa_etaria) VALUES
+    ('Unidade Tamoios', 1, '12 - 13'),
+    ('Unidade Arandu', 2, '13 - 14'),
+    ('Unidade Guaianases', 1, '10 - 11'),
+    ('Unidade Tupiniquim', 2, '>15');
 
 -- Evento
 INSERT INTO Evento (nome, tipo, data_inicio, data_fim, descricao) VALUES
@@ -63,11 +70,15 @@ INSERT INTO Pessoa (Classe_idClasse, Genero_idGenero, Unidade_idUnidade, nome, c
 -- Turma
 INSERT INTO Turma (Classe_idClasse, Unidade_idUnidade) VALUES
     (1, 1), (2, 1), (3, 1), (4, 1), (5, 1),
-    (1, 2), (3, 2), (4, 2), (5, 2);
+    (1, 2), (3, 2), (4, 2), (5, 2),
+    (1, 3), (1, 4), (2, 3), (6, 4);
 
 -- Disciplina
 INSERT INTO Disciplina (Classe_idClasse, Especialidade_idEspecialidade) VALUES
-    (3, 1), (4, 1), (4, 2), (5, 1), (5, 2), (5, 3);
+    (1, 4), (1, 5), (1, 6),
+    (2, 1), (2, 5),
+    (3, 1), (4, 1), (4, 2), (5, 1), (5, 2), (5, 3),
+    (6, 7), (6, 8);
 
 -- Ocorrencia
 INSERT INTO Ocorrencia (data, descricao, Pessoa_idPessoa) VALUES

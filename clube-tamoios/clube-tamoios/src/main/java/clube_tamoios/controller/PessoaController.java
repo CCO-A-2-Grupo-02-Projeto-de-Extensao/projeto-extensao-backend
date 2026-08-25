@@ -1,6 +1,8 @@
 package clube_tamoios.controller;
 
 import clube_tamoios.dto.request.PessoaCadastroRequest;
+import clube_tamoios.dto.request.VinculoClasseRequest;
+import clube_tamoios.dto.request.VinculoUnidadeRequest;
 import clube_tamoios.dto.response.PessoaResponse;
 import clube_tamoios.mapper.PessoaMapper;
 import clube_tamoios.service.PessoaService;
@@ -57,6 +59,22 @@ public class PessoaController {
             @PathVariable Integer id,
             @RequestBody @Valid PessoaCadastroRequest request) {
         return ResponseEntity.ok(PessoaMapper.toResponse(service.atualizar(id, request)));
+    }
+
+    @PatchMapping("/{id}/classe")
+    @Operation(summary = "Vincular ou desvincular a pessoa de uma classe (idClasse nulo desvincula)")
+    public ResponseEntity<PessoaResponse> definirClasse(@PathVariable Integer id,
+                                                        @RequestBody VinculoClasseRequest request) {
+        return ResponseEntity.ok(
+                PessoaMapper.toResponse(service.definirClasse(id, request.getIdClasse())));
+    }
+
+    @PatchMapping("/{id}/unidade")
+    @Operation(summary = "Vincular ou desvincular a pessoa de uma unidade (idUnidade nulo desvincula)")
+    public ResponseEntity<PessoaResponse> definirUnidade(@PathVariable Integer id,
+                                                         @RequestBody VinculoUnidadeRequest request) {
+        return ResponseEntity.ok(
+                PessoaMapper.toResponse(service.definirUnidade(id, request.getIdUnidade())));
     }
 
     @PatchMapping("/{id}/desativar")

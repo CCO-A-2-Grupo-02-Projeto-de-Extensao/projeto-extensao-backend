@@ -14,7 +14,11 @@ CREATE TABLE IF NOT EXISTS Classe (
 CREATE TABLE IF NOT EXISTS Especialidade (
     idEspecialidade INT AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(45) NOT NULL,
-    descricao TEXT
+    -- Rótulo completo do manual, com a sigla: 'Estudos da Natureza (EN)'.
+    categoria VARCHAR(60),
+    descricao TEXT,
+    -- Caminho ou URL da insígnia; nulo enquanto não for cadastrada.
+    imagem VARCHAR(500)
 );
 
 CREATE TABLE IF NOT EXISTS Cargo (
@@ -53,6 +57,11 @@ CREATE TABLE IF NOT EXISTS Unidade (
     idUnidade INT AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(255) NOT NULL,
     Genero_idGenero INT,
+    -- Texto livre ('10 - 12', '>15'): nem toda unidade tem limite superior.
+    faixa_etaria VARCHAR(45),
+    -- A FK para Pessoa é criada no fim do arquivo: Unidade é declarada antes de
+    -- Pessoa, então a referência ainda não existe neste ponto.
+    Pessoa_idConselheiro INT,
     FOREIGN KEY (Genero_idGenero) REFERENCES Genero(idGenero) ON DELETE SET NULL
 );
 
@@ -172,3 +181,9 @@ CREATE TABLE IF NOT EXISTS Diagnostico (
     FOREIGN KEY (Comorbidade_idComorbidade) REFERENCES Comorbidade(idComorbidade) ON DELETE CASCADE,
     FOREIGN KEY (Documento_idDocumento) REFERENCES Documento(idDocumento) ON DELETE SET NULL
 );
+
+-- Conselheiro da unidade. Fica aqui, e não no CREATE TABLE Unidade, porque a
+-- tabela Pessoa só é declarada mais abaixo. Sai da unidade sem apagar a pessoa.
+ALTER TABLE Unidade
+    ADD CONSTRAINT fk_unidade_conselheiro
+    FOREIGN KEY (Pessoa_idConselheiro) REFERENCES Pessoa(idPessoa) ON DELETE SET NULL;
