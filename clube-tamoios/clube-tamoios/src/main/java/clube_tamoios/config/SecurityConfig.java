@@ -5,6 +5,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -17,10 +19,10 @@ import org.springframework.http.HttpMethod;
 @EnableMethodSecurity
 public class SecurityConfig {
 
-        @Bean
-        public org.springframework.security.crypto.password.PasswordEncoder passwordEncoder() {
-                return new org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder();
-        }
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
@@ -44,10 +46,7 @@ public class SecurityConfig {
 
         return http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                                .csrf(csrf -> csrf.requireCsrfProtectionMatcher(request -> {
-                                        String authorization = request.getHeader("Authorization");
-                                        return authorization == null || !authorization.startsWith("Bearer ");
-                                }))
+                .csrf(csrf -> csrf.disable())
 
                 // tirei a sessão porque o JWT não usa pelo que eu entendi
                 .sessionManagement(session ->
