@@ -50,11 +50,7 @@ public class ClasseService {
     public List<Pessoa> listarParticipantes(Integer idClasse) {
         buscarPorId(idClasse);
 
-        return pessoaRepository.findAll().stream()
-                .filter(pessoa -> pessoa.getClasse() != null
-                        && idClasse.equals(pessoa.getClasse().getIdClasse()))
-                .filter(pessoa -> Boolean.TRUE.equals(pessoa.getAtivo()))
-                .toList();
+        return pessoaRepository.findByClasseIdClasseAndAtivoTrue(idClasse);
     }
 
     /* ----------------------------------------------------------- especialidades */
@@ -109,8 +105,6 @@ public class ClasseService {
     public List<UnidadeDetalheResponse> listarUnidades(Integer idClasse) {
         buscarPorId(idClasse);
 
-        List<Pessoa> pessoas = pessoaRepository.findAll();
-
         return turmaRepository.findByClasseIdClasse(idClasse).stream()
                 .map(Turma::getUnidade)
                 .filter(unidade -> unidade != null)
@@ -132,15 +126,9 @@ public class ClasseService {
 
                     // Quantidade de desbravadores da unidade dentro desta classe —
                     // a mesma unidade pode atender mais de uma classe.
-                    long quantidade = pessoas.stream()
-                            .filter(pessoa -> Boolean.TRUE.equals(pessoa.getAtivo()))
-                            .filter(pessoa -> pessoa.getUnidade() != null
-                                    && pessoa.getUnidade().getIdUnidade().equals(unidade.getIdUnidade()))
-                            .filter(pessoa -> pessoa.getClasse() != null
-                                    && idClasse.equals(pessoa.getClasse().getIdClasse()))
-                            .count();
-
-                    dto.setQuantidadeDesbravadores(quantidade);
+                    dto.setQuantidadeDesbravadores(
+                            pessoaRepository.countByUnidadeIdUnidadeAndClasseIdClasseAndAtivoTrue(
+                                    unidade.getIdUnidade(), idClasse));
                     return dto;
                 })
                 .toList();

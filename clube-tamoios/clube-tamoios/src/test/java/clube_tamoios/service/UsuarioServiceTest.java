@@ -44,6 +44,9 @@ class UsuarioServiceTest {
     @Mock
     private PasswordEncoder passwordEncoder;
 
+    @Mock
+    private TokenService tokenService;
+
     @InjectMocks
     private UsuarioService service;
 
@@ -135,6 +138,7 @@ class UsuarioServiceTest {
         when(usuarioRepository.findByEmail(request.getEmail()))
                 .thenReturn(Optional.of(usuarioAtivo()));
         when(passwordEncoder.matches(request.getSenha(), usuarioAtivo().getSenha())).thenReturn(true);
+        when(tokenService.gerar(anyString(), anyString())).thenReturn("token-de-teste");
 
         LoginResponse response = service.login(request);
 

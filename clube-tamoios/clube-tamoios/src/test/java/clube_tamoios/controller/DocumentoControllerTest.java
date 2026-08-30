@@ -3,7 +3,8 @@ package clube_tamoios.controller;
 import clube_tamoios.config.SecurityConfig;
 import clube_tamoios.entity.Documento;
 import clube_tamoios.entity.Pessoa;
-import clube_tamoios.security.JwtUtil;
+import clube_tamoios.security.JwtTokenService;
+import clube_tamoios.service.TokenService;
 import clube_tamoios.service.DocumentoService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,11 +32,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(DocumentoController.class)
-@Import(SecurityConfig.class)
+@Import({SecurityConfig.class, JwtTokenService.class})
 class DocumentoControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private TokenService tokenService;
 
     @MockBean
     private DocumentoService documentoService;
@@ -45,7 +49,7 @@ class DocumentoControllerTest {
 
     @BeforeEach
     void setUp() {
-        token = JwtUtil.gerarToken("test@teste.com");
+        token = tokenService.gerar("test@teste.com", "DIRETOR");
 
         Pessoa pessoa = new Pessoa();
         pessoa.setIdPessoa(1);

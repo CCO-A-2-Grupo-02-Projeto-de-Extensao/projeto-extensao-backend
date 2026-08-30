@@ -21,4 +21,17 @@ public class Cargo {
 
     public String getNome() { return nome; }
     public void setNome(String nome) { this.nome = nome; }
+
+    // Mapeia o cargo real (Diretor/Secretário/Tesoureiro/Instrutor/Desbravador)
+    // pras 3 categorias que o front usa pra agrupar as tabelas da tela de
+    // Desbravadores.
+    public static String categoriaDe(Cargo cargo) {
+        String nomeCargo = cargo == null ? null : cargo.getNome();
+        if (nomeCargo == null) return "aluno";
+        return switch (nomeCargo) {
+            case "Instrutor" -> "instrutor";
+            case "Desbravador" -> "aluno";
+            default -> "administrativo";
+        };
+    }
 }

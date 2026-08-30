@@ -15,6 +15,7 @@ import clube_tamoios.repository.UnidadeRepository;
 import clube_tamoios.repository.UsuarioRepository;
 import java.util.List;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class PessoaService {
@@ -146,6 +147,7 @@ public class PessoaService {
         return pessoaRepository.save(pessoa);
     }
 
+    @Transactional
     public void desativar(Integer id) {
         Pessoa pessoa = buscarPorId(id);
         pessoa.setAtivo(false);
@@ -157,6 +159,7 @@ public class PessoaService {
         });
     }
 
+    @Transactional
     public void reativar(Integer id) {
         Pessoa pessoa = buscarPorId(id);
         pessoa.setAtivo(true);

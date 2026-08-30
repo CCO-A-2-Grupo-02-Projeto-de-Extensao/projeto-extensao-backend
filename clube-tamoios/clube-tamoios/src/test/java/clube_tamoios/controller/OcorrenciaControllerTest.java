@@ -4,7 +4,8 @@ import clube_tamoios.config.SecurityConfig;
 import clube_tamoios.entity.Ocorrencia;
 import clube_tamoios.entity.Pessoa;
 import clube_tamoios.exception.EntidadeNaoEncontradaException;
-import clube_tamoios.security.JwtUtil;
+import clube_tamoios.security.JwtTokenService;
+import clube_tamoios.service.TokenService;
 import clube_tamoios.service.OcorrenciaService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -33,11 +34,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(OcorrenciaController.class)
-@Import(SecurityConfig.class)
+@Import({SecurityConfig.class, JwtTokenService.class})
 class OcorrenciaControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private TokenService tokenService;
 
     @MockBean
     private OcorrenciaService service;
@@ -48,7 +52,7 @@ class OcorrenciaControllerTest {
 
     @BeforeEach
     void setUp() {
-        token = JwtUtil.gerarToken("test@teste.com");
+        token = tokenService.gerar("test@teste.com", "DIRETOR");
         mapper = new ObjectMapper().registerModule(new JavaTimeModule());
 
         Pessoa pessoa = new Pessoa();

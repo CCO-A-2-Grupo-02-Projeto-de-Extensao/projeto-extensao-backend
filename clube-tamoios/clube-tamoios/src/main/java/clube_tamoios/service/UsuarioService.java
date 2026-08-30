@@ -16,7 +16,6 @@ import clube_tamoios.mapper.UsuarioMapper;
 import clube_tamoios.repository.CargoRepository;
 import clube_tamoios.repository.PessoaRepository;
 import clube_tamoios.repository.UsuarioRepository;
-import clube_tamoios.security.JwtUtil;
 
 import java.util.List;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -28,15 +27,18 @@ public class UsuarioService {
     private final PessoaRepository pessoaRepository;
     private final CargoRepository cargoRepository;
     private final PasswordEncoder passwordEncoder;
+    private final TokenService tokenService;
 
     public UsuarioService(UsuarioRepository usuarioRepository,
                           PessoaRepository pessoaRepository,
                           CargoRepository cargoRepository,
-                          PasswordEncoder passwordEncoder) {
+                          PasswordEncoder passwordEncoder,
+                          TokenService tokenService) {
         this.usuarioRepository = usuarioRepository;
         this.pessoaRepository = pessoaRepository;
         this.cargoRepository = cargoRepository;
         this.passwordEncoder = passwordEncoder;
+        this.tokenService = tokenService;
     }
 
     public UsuarioResponse cadastrar(UsuarioCadastroRequest request) {
@@ -73,7 +75,7 @@ public class UsuarioService {
         }
 
         LoginResponse response = UsuarioMapper.toLoginResponse(usuario);
-        response.setToken(JwtUtil.gerarToken(usuario.getEmail(), normalizarCargo(usuario.getCargo().getNome())));
+        response.setToken(tokenService.gerar(usuario.getEmail(), normalizarCargo(usuario.getCargo().getNome())));
         return response;
     }
 

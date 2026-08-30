@@ -1,6 +1,7 @@
 package clube_tamoios.config;
 
 import clube_tamoios.security.JwtFilter;
+import clube_tamoios.service.TokenService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -42,7 +43,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, TokenService tokenService) throws Exception {
 
         return http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
@@ -70,7 +71,7 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
 
-                .addFilterBefore(new JwtFilter(), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtFilter(tokenService), UsernamePasswordAuthenticationFilter.class)
 
                 .build();
     }

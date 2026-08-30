@@ -1,22 +1,11 @@
 package clube_tamoios.mapper;
 
 import clube_tamoios.dto.response.PessoaResponse;
+import clube_tamoios.entity.Cargo;
 import clube_tamoios.entity.Pessoa;
 import java.util.List;
 
 public class PessoaMapper {
-
-    // Mapeia o cargo real (Diretor/Secretário/Tesoureiro/Instrutor/Desbravador)
-    // pras 3 categorias que o front usa pra agrupar as tabelas da tela de
-    // Desbravadores.
-    private static String categoriaPorCargo(String nomeCargo) {
-        if (nomeCargo == null) return "aluno";
-        return switch (nomeCargo) {
-            case "Instrutor" -> "instrutor";
-            case "Desbravador" -> "aluno";
-            default -> "administrativo";
-        };
-    }
 
     public static PessoaResponse toResponse(Pessoa entity) {
         PessoaResponse dto = new PessoaResponse();
@@ -55,7 +44,7 @@ public class PessoaMapper {
             dto.setNomeCargo(entity.getCargo().getNome());
             dto.setIdCargo(entity.getCargo().getIdCargo());
         }
-        dto.setCategoria(categoriaPorCargo(dto.getNomeCargo()));
+        dto.setCategoria(Cargo.categoriaDe(entity.getCargo()));
 
         return dto;
     }

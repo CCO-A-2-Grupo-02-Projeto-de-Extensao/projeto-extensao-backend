@@ -1,5 +1,6 @@
 package clube_tamoios.security;
 
+import clube_tamoios.service.TokenService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,6 +14,12 @@ import java.io.IOException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 public class JwtFilter extends OncePerRequestFilter {
+
+    private final TokenService tokenService;
+
+    public JwtFilter(TokenService tokenService) {
+        this.tokenService = tokenService;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -43,8 +50,8 @@ public class JwtFilter extends OncePerRequestFilter {
 
         try {
             // valida o token
-                String username = JwtUtil.validarToken(token);
-                String role = JwtUtil.extrairRole(token);
+            String username = tokenService.validar(token);
+            String role = tokenService.extrairRole(token);
 
             UsernamePasswordAuthenticationToken auth =
                     new UsernamePasswordAuthenticationToken(
