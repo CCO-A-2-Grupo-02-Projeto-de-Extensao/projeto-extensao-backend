@@ -12,7 +12,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.mock.web.MockMultipartFile;
+import clube_tamoios.service.ArquivoUpload;
 
 import java.util.List;
 import java.util.Optional;
@@ -37,7 +37,7 @@ class DocumentoBancoServiceImplTest {
 
     private Pessoa pessoa;
     private Documento documento;
-    private MockMultipartFile arquivo;
+    private ArquivoUpload arquivo;
 
     @BeforeEach
     void setUp() {
@@ -53,7 +53,7 @@ class DocumentoBancoServiceImplTest {
         documento.setTamanho(1024L);
         documento.setDados("conteudo".getBytes());
 
-        arquivo = new MockMultipartFile("arquivo", "laudo.pdf", "application/pdf", "conteudo".getBytes());
+        arquivo = new ArquivoUpload("conteudo".getBytes(), "laudo.pdf", "application/pdf");
     }
 
     @Test

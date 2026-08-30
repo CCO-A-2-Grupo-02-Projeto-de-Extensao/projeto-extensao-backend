@@ -3,6 +3,7 @@ package clube_tamoios.controller;
 import clube_tamoios.dto.response.DocumentoResponse;
 import clube_tamoios.entity.Documento;
 import clube_tamoios.mapper.DocumentoMapper;
+import clube_tamoios.service.ArquivoUpload;
 import clube_tamoios.service.DocumentoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -41,7 +42,7 @@ public class DocumentoController {
             @RequestParam("arquivo") MultipartFile arquivo,
             @RequestParam("idPessoa") Integer idPessoa,
             @RequestParam(value = "tipo", required = false) String tipo) {
-        Documento salvo = documentoService.salvar(arquivo, idPessoa, tipo);
+        Documento salvo = documentoService.salvar(paraUpload(arquivo), idPessoa, tipo);
         return ResponseEntity.status(HttpStatus.CREATED).body(DocumentoMapper.toResponse(salvo));
     }
 
@@ -50,7 +51,7 @@ public class DocumentoController {
     public ResponseEntity<DocumentoResponse> substituir(
             @PathVariable Integer id,
             @RequestParam("arquivo") MultipartFile arquivo) {
-        Documento atualizado = documentoService.substituir(id, arquivo);
+        Documento atualizado = documentoService.substituir(id, paraUpload(arquivo));
         return ResponseEntity.ok(DocumentoMapper.toResponse(atualizado));
     }
 
@@ -97,6 +98,16 @@ public class DocumentoController {
                 .build());
 
         return ResponseEntity.ok().headers(headers).body(dados);
+    }
+
+    private static ArquivoUpload paraUpload(MultipartFile arquivo) {
+        try {
+            return new ArquivoUpload(arquivo.getBytes(),
+                    arquivo.getOriginalFilename(),
+                    arquivo.getContentType());
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao ler bytes do arquivo", e);
+        }
     }
 
     @DeleteMapping("/{id}")

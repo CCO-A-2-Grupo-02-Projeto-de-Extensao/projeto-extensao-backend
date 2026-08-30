@@ -2,13 +2,12 @@ package clube_tamoios.service;
 
 import clube_tamoios.entity.Documento;
 import java.util.List;
-import org.springframework.web.multipart.MultipartFile;
 
 public interface DocumentoService {
 
-    Documento salvar(MultipartFile arquivo, Integer idPessoa, String tipo);
+    Documento salvar(ArquivoUpload arquivo, Integer idPessoa, String tipo);
 
-    Documento substituir(Integer id, MultipartFile novoArquivo);
+    Documento substituir(Integer id, ArquivoUpload novoArquivo);
 
     List<Documento> listarPorPessoa(Integer idPessoa);
 

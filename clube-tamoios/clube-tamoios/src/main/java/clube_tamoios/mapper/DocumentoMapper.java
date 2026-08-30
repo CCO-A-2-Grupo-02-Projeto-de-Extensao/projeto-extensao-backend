@@ -3,8 +3,8 @@ package clube_tamoios.mapper;
 import clube_tamoios.dto.response.DocumentoResponse;
 import clube_tamoios.entity.Documento;
 import clube_tamoios.entity.Pessoa;
+import clube_tamoios.service.ArquivoUpload;
 import java.util.List;
-import org.springframework.web.multipart.MultipartFile;
 
 public class DocumentoMapper {
 
@@ -27,18 +27,14 @@ public class DocumentoMapper {
         return entities.stream().map(DocumentoMapper::toResponse).toList();
     }
 
-    public static Documento toEntity(MultipartFile arquivo, Pessoa pessoa, String tipo) {
-        try {
-            Documento doc = new Documento();
-            doc.setPessoa(pessoa);
-            doc.setTipo(tipo);
-            doc.setNomeOriginal(arquivo.getOriginalFilename());
-            doc.setMimeType(arquivo.getContentType());
-            doc.setTamanho(arquivo.getSize());
-            doc.setDados(arquivo.getBytes());
-            return doc;
-        } catch (Exception e) {
-            throw new RuntimeException("Erro ao ler bytes do arquivo", e);
-        }
+    public static Documento toEntity(ArquivoUpload arquivo, Pessoa pessoa, String tipo) {
+        Documento doc = new Documento();
+        doc.setPessoa(pessoa);
+        doc.setTipo(tipo);
+        doc.setNomeOriginal(arquivo.nomeOriginal());
+        doc.setMimeType(arquivo.mimeType());
+        doc.setTamanho(arquivo.tamanho());
+        doc.setDados(arquivo.conteudo());
+        return doc;
     }
 }

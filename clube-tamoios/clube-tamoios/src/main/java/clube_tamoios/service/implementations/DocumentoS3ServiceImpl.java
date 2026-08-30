@@ -6,13 +6,13 @@ import clube_tamoios.exception.EntidadeNaoEncontradaException;
 import clube_tamoios.mapper.DocumentoMapper;
 import clube_tamoios.repository.DocumentoRepository;
 import clube_tamoios.repository.PessoaRepository;
+import clube_tamoios.service.ArquivoUpload;
 import clube_tamoios.service.DocumentoService;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.core.ResponseBytes;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
@@ -41,18 +41,18 @@ public class DocumentoS3ServiceImpl implements DocumentoService {
     }
 
     @Override
-    public Documento salvar(MultipartFile arquivo, Integer idPessoa, String tipo) {
+    public Documento salvar(ArquivoUpload arquivo, Integer idPessoa, String tipo) {
         Pessoa pessoa = pessoaRepository.findById(idPessoa)
                 .orElseThrow(() -> new EntidadeNaoEncontradaException("Pessoa não encontrada: " + idPessoa));
 
         Documento doc = DocumentoMapper.toEntity(arquivo, pessoa, tipo);
-        String chave = "documentos/" + UUID.randomUUID() + "-" + arquivo.getOriginalFilename();
+        String chave = "documentos/" + UUID.randomUUID() + "-" + arquivo.nomeOriginal();
 
         PutObjectRequest request = PutObjectRequest.builder()
                 .bucket(bucket)
                 .key(chave)
-                .contentType(arquivo.getContentType())
-                .contentLength(arquivo.getSize())
+                .contentType(arquivo.mimeType())
+                .contentLength(arquivo.tamanho())
                 .build();
 
         s3Client.putObject(request, RequestBody.fromBytes(doc.getDados()));
@@ -63,7 +63,7 @@ public class DocumentoS3ServiceImpl implements DocumentoService {
     }
 
     @Override
-    public Documento substituir(Integer id, MultipartFile novoArquivo) {
+    public Documento substituir(Integer id, ArquivoUpload novoArquivo) {
         Documento doc = buscarPorId(id);
 
         s3Client.deleteObject(DeleteObjectRequest.builder()
@@ -72,17 +72,17 @@ public class DocumentoS3ServiceImpl implements DocumentoService {
                 .build());
 
         try {
-            String novaChave = "documentos/" + UUID.randomUUID() + "-" + novoArquivo.getOriginalFilename();
+            String novaChave = "documentos/" + UUID.randomUUID() + "-" + novoArquivo.nomeOriginal();
             s3Client.putObject(PutObjectRequest.builder()
                     .bucket(bucket)
                     .key(novaChave)
-                    .contentType(novoArquivo.getContentType())
-                    .contentLength(novoArquivo.getSize())
-                    .build(), RequestBody.fromBytes(novoArquivo.getBytes()));
+                    .contentType(novoArquivo.mimeType())
+                    .contentLength(novoArquivo.tamanho())
+                    .build(), RequestBody.fromBytes(novoArquivo.conteudo()));
 
-            doc.setNomeOriginal(novoArquivo.getOriginalFilename());
-            doc.setMimeType(novoArquivo.getContentType());
-            doc.setTamanho(novoArquivo.getSize());
+            doc.setNomeOriginal(novoArquivo.nomeOriginal());
+            doc.setMimeType(novoArquivo.mimeType());
+            doc.setTamanho(novoArquivo.tamanho());
             doc.setNomeGerado(novaChave);
         } catch (Exception e) {
             throw new RuntimeException("Erro ao substituir arquivo no S3", e);

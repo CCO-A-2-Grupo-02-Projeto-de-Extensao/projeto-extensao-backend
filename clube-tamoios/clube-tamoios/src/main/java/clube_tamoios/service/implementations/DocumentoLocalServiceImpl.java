@@ -6,6 +6,7 @@ import clube_tamoios.exception.EntidadeNaoEncontradaException;
 import clube_tamoios.mapper.DocumentoMapper;
 import clube_tamoios.repository.DocumentoRepository;
 import clube_tamoios.repository.PessoaRepository;
+import clube_tamoios.service.ArquivoUpload;
 import clube_tamoios.service.DocumentoService;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -16,7 +17,6 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @ConditionalOnProperty(name = "app.storage.type", havingValue = "local")
@@ -35,12 +35,12 @@ public class DocumentoLocalServiceImpl implements DocumentoService {
     }
 
     @Override
-    public Documento salvar(MultipartFile arquivo, Integer idPessoa, String tipo) {
+    public Documento salvar(ArquivoUpload arquivo, Integer idPessoa, String tipo) {
         Pessoa pessoa = pessoaRepository.findById(idPessoa)
                 .orElseThrow(() -> new EntidadeNaoEncontradaException("Pessoa não encontrada: " + idPessoa));
 
         Documento doc = DocumentoMapper.toEntity(arquivo, pessoa, tipo);
-        String nomeFisico = UUID.randomUUID() + "_" + arquivo.getOriginalFilename();
+        String nomeFisico = UUID.randomUUID() + "_" + arquivo.nomeOriginal();
         Path destino = pastaBase.resolve(nomeFisico);
 
         try {
@@ -56,19 +56,19 @@ public class DocumentoLocalServiceImpl implements DocumentoService {
     }
 
     @Override
-    public Documento substituir(Integer id, MultipartFile novoArquivo) {
+    public Documento substituir(Integer id, ArquivoUpload novoArquivo) {
         Documento doc = buscarPorId(id);
         try {
             Files.deleteIfExists(Paths.get(doc.getNomeGerado()));
 
-            String nomeFisico = UUID.randomUUID() + "_" + novoArquivo.getOriginalFilename();
+            String nomeFisico = UUID.randomUUID() + "_" + novoArquivo.nomeOriginal();
             Path destino = pastaBase.resolve(nomeFisico);
             Files.createDirectories(pastaBase);
-            Files.write(destino, novoArquivo.getBytes());
+            Files.write(destino, novoArquivo.conteudo());
 
-            doc.setNomeOriginal(novoArquivo.getOriginalFilename());
-            doc.setMimeType(novoArquivo.getContentType());
-            doc.setTamanho(novoArquivo.getSize());
+            doc.setNomeOriginal(novoArquivo.nomeOriginal());
+            doc.setMimeType(novoArquivo.mimeType());
+            doc.setTamanho(novoArquivo.tamanho());
             doc.setNomeGerado(destino.toString());
         } catch (IOException e) {
             throw new RuntimeException("Erro ao substituir arquivo em disco", e);

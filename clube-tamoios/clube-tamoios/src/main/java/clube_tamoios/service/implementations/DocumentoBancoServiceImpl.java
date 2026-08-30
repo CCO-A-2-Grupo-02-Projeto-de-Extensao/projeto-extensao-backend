@@ -6,11 +6,11 @@ import clube_tamoios.exception.EntidadeNaoEncontradaException;
 import clube_tamoios.mapper.DocumentoMapper;
 import clube_tamoios.repository.DocumentoRepository;
 import clube_tamoios.repository.PessoaRepository;
+import clube_tamoios.service.ArquivoUpload;
 import clube_tamoios.service.DocumentoService;
 import java.util.List;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @ConditionalOnProperty(name = "app.storage.type", havingValue = "banco", matchIfMissing = true)
@@ -26,7 +26,7 @@ public class DocumentoBancoServiceImpl implements DocumentoService {
     }
 
     @Override
-    public Documento salvar(MultipartFile arquivo, Integer idPessoa, String tipo) {
+    public Documento salvar(ArquivoUpload arquivo, Integer idPessoa, String tipo) {
         Pessoa pessoa = pessoaRepository.findById(idPessoa)
                 .orElseThrow(() -> new EntidadeNaoEncontradaException("Pessoa não encontrada: " + idPessoa));
         Documento doc = DocumentoMapper.toEntity(arquivo, pessoa, tipo);
@@ -34,16 +34,12 @@ public class DocumentoBancoServiceImpl implements DocumentoService {
     }
 
     @Override
-    public Documento substituir(Integer id, MultipartFile novoArquivo) {
+    public Documento substituir(Integer id, ArquivoUpload novoArquivo) {
         Documento doc = buscarPorId(id);
-        try {
-            doc.setNomeOriginal(novoArquivo.getOriginalFilename());
-            doc.setMimeType(novoArquivo.getContentType());
-            doc.setTamanho(novoArquivo.getSize());
-            doc.setDados(novoArquivo.getBytes());
-        } catch (Exception e) {
-            throw new RuntimeException("Erro ao ler bytes do arquivo", e);
-        }
+        doc.setNomeOriginal(novoArquivo.nomeOriginal());
+        doc.setMimeType(novoArquivo.mimeType());
+        doc.setTamanho(novoArquivo.tamanho());
+        doc.setDados(novoArquivo.conteudo());
         return documentoRepository.save(doc);
     }
 

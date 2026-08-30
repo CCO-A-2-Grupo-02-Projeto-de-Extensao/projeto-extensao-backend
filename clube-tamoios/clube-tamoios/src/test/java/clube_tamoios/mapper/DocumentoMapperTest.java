@@ -4,7 +4,7 @@ import clube_tamoios.dto.response.DocumentoResponse;
 import clube_tamoios.entity.Documento;
 import clube_tamoios.entity.Pessoa;
 import org.junit.jupiter.api.Test;
-import org.springframework.mock.web.MockMultipartFile;
+import clube_tamoios.service.ArquivoUpload;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -76,11 +76,11 @@ class DocumentoMapperTest {
     }
 
     @Test
-    void toEntity_deveMapearMultipartFileParaDocumentoCorretamente() {
+    void toEntity_deveMapearArquivoUploadParaDocumentoCorretamente() {
         Pessoa pessoa = new Pessoa();
         pessoa.setIdPessoa(1);
         byte[] conteudo = "conteudo do arquivo de teste".getBytes();
-        MockMultipartFile arquivo = new MockMultipartFile("arquivo", "laudo.pdf", "application/pdf", conteudo);
+        ArquivoUpload arquivo = new ArquivoUpload(conteudo, "laudo.pdf", "application/pdf");
 
         Documento doc = DocumentoMapper.toEntity(arquivo, pessoa, "laudo");
 

@@ -12,7 +12,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.mock.web.MockMultipartFile;
+import clube_tamoios.service.ArquivoUpload;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -41,7 +41,7 @@ class DocumentoLocalServiceImplTest {
     private DocumentoLocalServiceImpl service;
 
     private Pessoa pessoa;
-    private MockMultipartFile arquivo;
+    private ArquivoUpload arquivo;
 
     @BeforeEach
     void setUp() {
@@ -51,7 +51,7 @@ class DocumentoLocalServiceImplTest {
         pessoa.setIdPessoa(1);
         pessoa.setNome("Carlos Silva");
 
-        arquivo = new MockMultipartFile("arquivo", "laudo.pdf", "application/pdf", "conteudo do arquivo".getBytes());
+        arquivo = new ArquivoUpload("conteudo do arquivo".getBytes(), "laudo.pdf", "application/pdf");
     }
 
     @Test
