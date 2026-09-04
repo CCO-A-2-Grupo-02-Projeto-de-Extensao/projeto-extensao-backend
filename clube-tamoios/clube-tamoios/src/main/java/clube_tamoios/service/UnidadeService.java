@@ -8,8 +8,10 @@ import clube_tamoios.entity.Unidade;
 import clube_tamoios.exception.EntidadeNaoEncontradaException;
 import clube_tamoios.repository.GeneroRepository;
 import clube_tamoios.repository.PessoaRepository;
+import clube_tamoios.repository.TurmaRepository;
 import clube_tamoios.repository.UnidadeRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -19,13 +21,16 @@ public class UnidadeService {
     private final UnidadeRepository unidadeRepository;
     private final GeneroRepository generoRepository;
     private final PessoaRepository pessoaRepository;
+    private final TurmaRepository turmaRepository;
 
     public UnidadeService(UnidadeRepository unidadeRepository,
                           GeneroRepository generoRepository,
-                          PessoaRepository pessoaRepository) {
+                          PessoaRepository pessoaRepository,
+                          TurmaRepository turmaRepository) {
         this.unidadeRepository = unidadeRepository;
         this.generoRepository = generoRepository;
         this.pessoaRepository = pessoaRepository;
+        this.turmaRepository = turmaRepository;
     }
 
     public List<Unidade> listar() {
@@ -57,6 +62,24 @@ public class UnidadeService {
         return unidadeRepository.save(unidade);
     }
 
+    // Apagar a unidade nunca apaga pessoa: quem estava nela fica sem unidade,
+    // como no "remover da classe".
+    @Transactional
+    public void deletar(Integer id) {
+        Unidade unidade = buscarPorId(id);
+
+        List<Pessoa> daUnidade = pessoaRepository.findAll().stream()
+                .filter(pessoa -> pessoa.getUnidade() != null
+                        && pessoa.getUnidade().getIdUnidade().equals(id))
+                .toList();
+
+        daUnidade.forEach(pessoa -> pessoa.setUnidade(null));
+        pessoaRepository.saveAll(daUnidade);
+
+        turmaRepository.deleteAll(turmaRepository.findByUnidadeIdUnidade(id));
+        unidadeRepository.delete(unidade);
+    }
+
     public UnidadeDetalheResponse toDetalhe(Unidade unidade) {
         return toDetalhe(unidade, pessoaRepository.findAll());
     }
@@ -77,19 +100,21 @@ public class UnidadeService {
             dto.setNomeConselheiro(unidade.getConselheiro().getNome());
         }
 
-        long quantidade = pessoas.stream()
+        List<Pessoa> desbravadores = pessoas.stream()
                 .filter(pessoa -> Boolean.TRUE.equals(pessoa.getAtivo()))
+                .filter(RegrasUnidade::contaComoDesbravador)
                 .filter(pessoa -> pessoa.getUnidade() != null
                         && pessoa.getUnidade().getIdUnidade().equals(unidade.getIdUnidade()))
-                .count();
+                .toList();
 
-        dto.setQuantidadeDesbravadores(quantidade);
+        dto.setQuantidadeDesbravadores((long) desbravadores.size());
+        dto.setInconsistencias(RegrasUnidade.inconsistencias(unidade, desbravadores));
         return dto;
     }
 
-    // Gênero e conselheiro são opcionais: o formulário do modal permite criar a
-    // unidade só com o nome e preencher o resto depois.
     private void aplicar(Unidade unidade, UnidadeRequest request) {
+        RegrasUnidade.validarDadosDaUnidade(request.getIdGenero(), request.getFaixaEtaria());
+
         unidade.setNome(request.getNome().trim());
         unidade.setFaixaEtaria(request.getFaixaEtaria());
 

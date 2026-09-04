@@ -1,5 +1,7 @@
 package clube_tamoios.dto.response;
 
+import java.util.List;
+
 // Diferente do CatalogoResponse (id + nome) que alimenta os dropdowns: aqui vai
 // o que a tabela de Unidades da classe precisa mostrar por linha.
 public class UnidadeDetalheResponse {
@@ -12,6 +14,7 @@ public class UnidadeDetalheResponse {
     private Integer idConselheiro;
     private String nomeConselheiro;
     private Long quantidadeDesbravadores;
+    private List<String> inconsistencias;
 
     public Integer getId() { return id; }
     public void setId(Integer id) { this.id = id; }
@@ -36,4 +39,7 @@ public class UnidadeDetalheResponse {
 
     public Long getQuantidadeDesbravadores() { return quantidadeDesbravadores; }
     public void setQuantidadeDesbravadores(Long quantidadeDesbravadores) { this.quantidadeDesbravadores = quantidadeDesbravadores; }
+
+    public List<String> getInconsistencias() { return inconsistencias; }
+    public void setInconsistencias(List<String> inconsistencias) { this.inconsistencias = inconsistencias; }
 }

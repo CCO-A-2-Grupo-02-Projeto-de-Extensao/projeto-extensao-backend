@@ -50,6 +50,13 @@ public class UnidadeController {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.toDetalhe(criada));
     }
 
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Excluir unidade e desvincular seus desbravadores")
+    public ResponseEntity<Void> deletar(@PathVariable Integer id) {
+        service.deletar(id);
+        return ResponseEntity.noContent().build();
+    }
+
     @PutMapping("/{id}")
     @Operation(summary = "Atualizar unidade")
     public ResponseEntity<UnidadeDetalheResponse> atualizar(@PathVariable Integer id,

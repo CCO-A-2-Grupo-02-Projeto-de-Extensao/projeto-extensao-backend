@@ -13,12 +13,25 @@ import clube_tamoios.repository.GeneroRepository;
 import clube_tamoios.repository.PessoaRepository;
 import clube_tamoios.repository.UnidadeRepository;
 import clube_tamoios.repository.UsuarioRepository;
+import java.text.Normalizer;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class PessoaService {
+
+    private static final Map<Integer, String> CLASSE_POR_IDADE = Map.of(
+            10, "amigo",
+            11, "companheiro",
+            12, "pesquisador",
+            13, "pioneiro",
+            14, "excursionista",
+            15, "guia");
+
+    private static final String CARGO_ALUNO = "desbravador";
 
     private final PessoaRepository pessoaRepository;
     private final ClasseRepository classeRepository;
@@ -78,6 +91,7 @@ public class PessoaService {
         if (request.getIdUnidade() != null) {
             Unidade unidade = unidadeRepository.findById(request.getIdUnidade())
                     .orElseThrow(() -> new EntidadeNaoEncontradaException("Unidade não encontrada: " + request.getIdUnidade()));
+            validarEntradaNaUnidade(pessoa, unidade);
             pessoa.setUnidade(unidade);
         } else {
             pessoa.setUnidade(null);
@@ -96,7 +110,63 @@ public class PessoaService {
         Pessoa pessoa = new Pessoa();
         pessoa.setAtivo(true);
         aplicarCampos(pessoa, request);
+
+        if (pessoa.getClasse() == null && !Boolean.FALSE.equals(request.getIsDesbravador())) {
+            classeDaIdade(request.getDataNascimento()).ifPresent(classe -> {
+                pessoa.setClasse(classe);
+                if (pessoa.getCargo() == null) {
+                    cargoAluno().ifPresent(pessoa::setCargo);
+                }
+            });
+        }
+
         return pessoaRepository.save(pessoa);
+    }
+
+    private static String normalizar(String valor) {
+        return Normalizer.normalize(valor == null ? "" : valor, Normalizer.Form.NFD)
+                .replaceAll("\\p{M}", "")
+                .trim()
+                .toLowerCase();
+    }
+
+    private Optional<Classe> classeDaIdade(String dataNascimento) {
+        Integer idade = RegrasUnidade.idadeEm(dataNascimento);
+        if (idade == null) {
+            return Optional.empty();
+        }
+
+        String nomeDaClasse = CLASSE_POR_IDADE.get(idade);
+        if (nomeDaClasse == null) {
+            return Optional.empty();
+        }
+
+        return classeRepository.findAll().stream()
+                .filter(classe -> normalizar(classe.getNome()).equals(nomeDaClasse))
+                .findFirst();
+    }
+
+    private Optional<Cargo> cargoAluno() {
+        return cargoRepository.findAll().stream()
+                .filter(cargo -> normalizar(cargo.getNome()).equals(CARGO_ALUNO))
+                .findFirst();
+    }
+
+    private void validarEntradaNaUnidade(Pessoa pessoa, Unidade unidade) {
+        if (pessoa.getUnidade() != null
+                && pessoa.getUnidade().getIdUnidade().equals(unidade.getIdUnidade())) {
+            return;
+        }
+
+        long ocupacao = pessoaRepository.findAll().stream()
+                .filter(outra -> Boolean.TRUE.equals(outra.getAtivo()))
+                .filter(RegrasUnidade::contaComoDesbravador)
+                .filter(outra -> outra.getUnidade() != null
+                        && outra.getUnidade().getIdUnidade().equals(unidade.getIdUnidade()))
+                .filter(outra -> !outra.getIdPessoa().equals(pessoa.getIdPessoa()))
+                .count();
+
+        RegrasUnidade.validarEntrada(pessoa, unidade, ocupacao);
     }
 
     public List<Pessoa> listar() {
@@ -139,9 +209,11 @@ public class PessoaService {
         if (idUnidade == null) {
             pessoa.setUnidade(null);
         } else {
-            pessoa.setUnidade(unidadeRepository.findById(idUnidade)
+            Unidade unidade = unidadeRepository.findById(idUnidade)
                     .orElseThrow(() -> new EntidadeNaoEncontradaException(
-                            "Unidade não encontrada: " + idUnidade)));
+                            "Unidade não encontrada: " + idUnidade));
+            validarEntradaNaUnidade(pessoa, unidade);
+            pessoa.setUnidade(unidade);
         }
 
         return pessoaRepository.save(pessoa);
