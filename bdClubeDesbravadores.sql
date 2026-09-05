@@ -66,9 +66,9 @@ CREATE TABLE IF NOT EXISTS Unidade (
 );
 
 CREATE TABLE IF NOT EXISTS Turma (
+	idTurma INT AUTO_INCREMENT PRIMARY KEY,
     Classe_idClasse INT,
     Unidade_idUnidade INT,
-    PRIMARY KEY (Classe_idClasse, Unidade_idUnidade),
     FOREIGN KEY (Classe_idClasse) REFERENCES Classe(idClasse) ON DELETE CASCADE,
     FOREIGN KEY (Unidade_idUnidade) REFERENCES Unidade(idUnidade) ON DELETE CASCADE
 );
