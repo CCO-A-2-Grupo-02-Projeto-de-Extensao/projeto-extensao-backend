@@ -1,6 +1,3 @@
-CREATE DATABASE IF NOT EXISTS clube_tamoios;
-USE clube_tamoios;
-
 CREATE TABLE IF NOT EXISTS Genero (
     idGenero INT AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(45) NOT NULL
@@ -26,7 +23,7 @@ CREATE TABLE IF NOT EXISTS Cargo (
     Nome VARCHAR(45) NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS Evento (
+CREATE TABLE IF NOT EXISTS evento (
     idEvento INT AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(100) NOT NULL,
     tipo VARCHAR(50),
@@ -35,12 +32,12 @@ CREATE TABLE IF NOT EXISTS Evento (
     descricao TEXT
 );
 
-CREATE TABLE IF NOT EXISTS Chamada (
+CREATE TABLE IF NOT EXISTS chamada (
     idChamada INT AUTO_INCREMENT PRIMARY KEY,
     Evento_idEvento INT NOT NULL,
     data_chamada DATE NOT NULL,
     titulo VARCHAR(100),
-    FOREIGN KEY (Evento_idEvento) REFERENCES Evento(idEvento) ON DELETE CASCADE
+    FOREIGN KEY (Evento_idEvento) REFERENCES evento(idEvento) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS Medicamento (
@@ -65,10 +62,10 @@ CREATE TABLE IF NOT EXISTS Unidade (
     FOREIGN KEY (Genero_idGenero) REFERENCES Genero(idGenero) ON DELETE SET NULL
 );
 
-CREATE TABLE IF NOT EXISTS Turma (
-	idTurma INT AUTO_INCREMENT PRIMARY KEY,
-    Classe_idClasse INT,
-    Unidade_idUnidade INT,
+CREATE TABLE IF NOT EXISTS turma (
+    idTurma INT AUTO_INCREMENT PRIMARY KEY,
+    Classe_idClasse INT NOT NULL,
+    Unidade_idUnidade INT NOT NULL,
     FOREIGN KEY (Classe_idClasse) REFERENCES Classe(idClasse) ON DELETE CASCADE,
     FOREIGN KEY (Unidade_idUnidade) REFERENCES Unidade(idUnidade) ON DELETE CASCADE
 );
@@ -144,12 +141,12 @@ CREATE TABLE IF NOT EXISTS Documento (
     FOREIGN KEY (Pessoa_idPessoa) REFERENCES Pessoa(idPessoa) ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS Presenca (
-    Chamada_idChamada INT,
-    Pessoa_idPessoa INT,
+CREATE TABLE IF NOT EXISTS presenca (
+    idPresenca INT AUTO_INCREMENT PRIMARY KEY,
+    Chamada_idChamada INT NOT NULL,
+    Pessoa_idPessoa INT NOT NULL,
     presenca BOOLEAN DEFAULT FALSE,
-    PRIMARY KEY (Chamada_idChamada, Pessoa_idPessoa),
-    FOREIGN KEY (Chamada_idChamada) REFERENCES Chamada(idChamada) ON DELETE CASCADE,
+    FOREIGN KEY (Chamada_idChamada) REFERENCES chamada(idChamada) ON DELETE CASCADE,
     FOREIGN KEY (Pessoa_idPessoa) REFERENCES Pessoa(idPessoa) ON DELETE CASCADE
 );
 
