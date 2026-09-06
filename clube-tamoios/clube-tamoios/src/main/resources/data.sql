@@ -205,3 +205,25 @@ INSERT IGNORE INTO Disciplina (Classe_idClasse, Especialidade_idEspecialidade) V
     (4, 30), (4, 36), (4, 18), (4, 43), (4, 16),
     (5, 31), (5, 40), (5, 20), (5, 6), (5, 46),
     (6, 27), (6, 37), (6, 8), (6, 28), (6, 47);
+
+-- Evento
+INSERT IGNORE INTO evento (idEvento, nome, tipo, data_inicio, data_fim, descricao) VALUES
+    (1, 'Campori 2026', 'Acampamento', '2026-07-10', '2026-07-15', 'Grande acampamento regional'),
+    (2, 'Reunião Mensal Maio', 'Reunião', '2026-05-20', NULL, 'Reunião mensal do clube');
+
+-- Chamada
+INSERT IGNORE INTO chamada (idChamada, Evento_idEvento, data_chamada, titulo) VALUES
+    (1, 2, '2026-05-20', 'Chamada Reunião Maio');
+
+-- Presenca
+INSERT IGNORE INTO presenca (idPresenca, Chamada_idChamada, Pessoa_idPessoa, presenca) VALUES
+    (1, 1, 1, TRUE),
+    (2, 1, 2, TRUE),
+    (3, 1, 3, FALSE),
+    (4, 1, 4, TRUE),
+    (5, 1, 5, TRUE);
+
+-- Ocorrencia
+INSERT IGNORE INTO Ocorrencia (idOcorrencia, data, descricao, Pessoa_idPessoa) VALUES
+    (1, '2026-04-10', 'Leve torção no tornozelo durante atividade física.', 1),
+    (2, '2026-03-22', 'Reação alérgica leve após contato com planta.', 2);
