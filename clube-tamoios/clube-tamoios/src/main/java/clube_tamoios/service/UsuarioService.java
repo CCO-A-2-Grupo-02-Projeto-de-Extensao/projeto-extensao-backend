@@ -52,6 +52,8 @@ public class UsuarioService {
         Cargo cargo = cargoRepository.findById(request.getIdCargo())
                 .orElseThrow(() -> new EntidadeNaoEncontradaException("Cargo não encontrado com id: " + request.getIdCargo()));
 
+        pessoa.setCargo(cargo);
+
         Usuario usuario = new Usuario();
         usuario.setPessoa(pessoa);
         usuario.setCargo(cargo);
