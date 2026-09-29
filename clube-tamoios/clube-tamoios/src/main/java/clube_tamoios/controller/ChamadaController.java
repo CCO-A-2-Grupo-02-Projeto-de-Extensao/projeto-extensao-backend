@@ -8,9 +8,11 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -34,10 +36,19 @@ public class ChamadaController {
         return ResponseEntity.ok(ChamadaMapper.toResponse(service.listarPorEvento(idEvento)));
     }
 
+    @GetMapping("/data/{data}")
+    @Operation(summary = "Buscar chamada por data (formato YYYY-MM-DD)")
+    public ResponseEntity<ChamadaResponse> buscarPorData(
+            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate data) {
+        return service.buscarPorData(data)
+                .map(c -> ResponseEntity.ok(ChamadaMapper.toResponse(c)))
+                .orElse(ResponseEntity.notFound().build());
+    }
+
     @DeleteMapping("/{id}")
     @Operation(summary = "Deletar chamada")
     public ResponseEntity<Void> deletar(@PathVariable Integer id) {
         service.deletar(id);
         return ResponseEntity.noContent().build();
     }
-}
+}

@@ -7,7 +7,9 @@ import clube_tamoios.exception.EntidadeNaoEncontradaException;
 import clube_tamoios.repository.ChamadaRepository;
 import clube_tamoios.repository.EventoRepository;
 import org.springframework.stereotype.Service;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ChamadaService {
@@ -37,6 +39,10 @@ public class ChamadaService {
     public Chamada buscarPorId(Integer id) {
         return chamadaRepository.findById(id)
                 .orElseThrow(() -> new EntidadeNaoEncontradaException("Chamada não encontrada: " + id));
+    }
+
+    public Optional<Chamada> buscarPorData(LocalDate data) {
+        return chamadaRepository.findByDataChamada(data);
     }
 
     public void deletar(Integer id) {
