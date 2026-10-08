@@ -48,6 +48,16 @@ public class Documento {
     @Column(nullable = false)
     private LocalDateTime dataUpload;
 
+    // Enquadramento da imagem quando ela é exibida recortada (hoje só a foto
+    // de perfil). posX/posY são percentuais de object-position — 50/50 é o
+    // centro, que é o padrão do CSS — e zoom é o fator de escala. Ficam nulos
+    // em documentos que nunca foram ajustados; quem renderiza usa o padrão.
+    private Double posX;
+
+    private Double posY;
+
+    private Double zoom;
+
     public Integer getId() {
         return id;
     }
@@ -118,5 +128,29 @@ public class Documento {
 
     public void setDataUpload(LocalDateTime dataUpload) {
         this.dataUpload = dataUpload;
+    }
+
+    public Double getPosX() {
+        return posX;
+    }
+
+    public void setPosX(Double posX) {
+        this.posX = posX;
+    }
+
+    public Double getPosY() {
+        return posY;
+    }
+
+    public void setPosY(Double posY) {
+        this.posY = posY;
+    }
+
+    public Double getZoom() {
+        return zoom;
+    }
+
+    public void setZoom(Double zoom) {
+        this.zoom = zoom;
     }
 }

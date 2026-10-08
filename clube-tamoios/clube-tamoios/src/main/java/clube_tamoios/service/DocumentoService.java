@@ -16,4 +16,7 @@ public interface DocumentoService {
     byte[] obterDados(Integer id);
 
     void deletarPorId(Integer id);
+
+    /** Grava o enquadramento da imagem (object-position + zoom). */
+    Documento atualizarEnquadramento(Integer id, Double posX, Double posY, Double zoom);
 }

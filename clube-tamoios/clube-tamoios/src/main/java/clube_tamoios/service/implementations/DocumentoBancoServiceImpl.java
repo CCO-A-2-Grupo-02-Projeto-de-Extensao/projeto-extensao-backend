@@ -65,4 +65,13 @@ public class DocumentoBancoServiceImpl implements DocumentoService {
         Documento doc = buscarPorId(id);
         documentoRepository.delete(doc);
     }
+
+    @Override
+    public Documento atualizarEnquadramento(Integer id, Double posX, Double posY, Double zoom) {
+        Documento doc = buscarPorId(id);
+        doc.setPosX(posX);
+        doc.setPosY(posY);
+        doc.setZoom(zoom);
+        return documentoRepository.save(doc);
+    }
 }
