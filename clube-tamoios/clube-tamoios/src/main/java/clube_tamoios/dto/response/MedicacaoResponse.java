@@ -14,6 +14,10 @@ public class MedicacaoResponse {
     private LocalDateTime horarioInicio;
     private LocalDateTime horarioFim;
     private BigDecimal dose;
+    private String unidadeDose;
+    private String diasSemana;
+    private String horarios;
+    private String observacoes;
 
     public Integer getId() {
         return id;
@@ -85,5 +89,37 @@ public class MedicacaoResponse {
 
     public void setDose(BigDecimal dose) {
         this.dose = dose;
+    }
+
+    public String getUnidadeDose() {
+        return unidadeDose;
+    }
+
+    public void setUnidadeDose(String unidadeDose) {
+        this.unidadeDose = unidadeDose;
+    }
+
+    public String getDiasSemana() {
+        return diasSemana;
+    }
+
+    public void setDiasSemana(String diasSemana) {
+        this.diasSemana = diasSemana;
+    }
+
+    public String getHorarios() {
+        return horarios;
+    }
+
+    public void setHorarios(String horarios) {
+        this.horarios = horarios;
+    }
+
+    public String getObservacoes() {
+        return observacoes;
+    }
+
+    public void setObservacoes(String observacoes) {
+        this.observacoes = observacoes;
     }
 }

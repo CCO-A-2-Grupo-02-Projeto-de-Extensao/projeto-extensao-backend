@@ -41,6 +41,18 @@ public class Medicacao {
     @Column(precision = 10, scale = 2)
     private BigDecimal dose;
 
+    @Column(name = "unidade_dose", length = 20)
+    private String unidadeDose;
+
+    @Column(name = "dias_semana", length = 45)
+    private String diasSemana;
+
+    @Column(length = 100)
+    private String horarios;
+
+    @Column(length = 255)
+    private String observacoes;
+
     public Integer getId() {
         return id;
     }
@@ -95,5 +107,37 @@ public class Medicacao {
 
     public void setDose(BigDecimal dose) {
         this.dose = dose;
+    }
+
+    public String getUnidadeDose() {
+        return unidadeDose;
+    }
+
+    public void setUnidadeDose(String unidadeDose) {
+        this.unidadeDose = unidadeDose;
+    }
+
+    public String getDiasSemana() {
+        return diasSemana;
+    }
+
+    public void setDiasSemana(String diasSemana) {
+        this.diasSemana = diasSemana;
+    }
+
+    public String getHorarios() {
+        return horarios;
+    }
+
+    public void setHorarios(String horarios) {
+        this.horarios = horarios;
+    }
+
+    public String getObservacoes() {
+        return observacoes;
+    }
+
+    public void setObservacoes(String observacoes) {
+        this.observacoes = observacoes;
     }
 }
