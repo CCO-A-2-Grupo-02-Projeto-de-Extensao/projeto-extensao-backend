@@ -12,6 +12,9 @@ public class DocumentoResponse {
     private String mimeType;
     private Long tamanho;
     private LocalDateTime dataUpload;
+    private Double posX;
+    private Double posY;
+    private Double zoom;
 
     public Integer getId() {
         return id;
@@ -75,5 +78,29 @@ public class DocumentoResponse {
 
     public void setDataUpload(LocalDateTime dataUpload) {
         this.dataUpload = dataUpload;
+    }
+
+    public Double getPosX() {
+        return posX;
+    }
+
+    public void setPosX(Double posX) {
+        this.posX = posX;
+    }
+
+    public Double getPosY() {
+        return posY;
+    }
+
+    public void setPosY(Double posY) {
+        this.posY = posY;
+    }
+
+    public Double getZoom() {
+        return zoom;
+    }
+
+    public void setZoom(Double zoom) {
+        this.zoom = zoom;
     }
 }

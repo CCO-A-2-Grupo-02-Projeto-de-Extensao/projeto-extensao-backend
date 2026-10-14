@@ -107,4 +107,13 @@ public class DocumentoLocalServiceImpl implements DocumentoService {
         }
         documentoRepository.delete(doc);
     }
+
+    @Override
+    public Documento atualizarEnquadramento(Integer id, Double posX, Double posY, Double zoom) {
+        Documento doc = buscarPorId(id);
+        doc.setPosX(posX);
+        doc.setPosY(posY);
+        doc.setZoom(zoom);
+        return documentoRepository.save(doc);
+    }
 }

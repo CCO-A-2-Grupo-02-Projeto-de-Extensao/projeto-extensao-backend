@@ -141,6 +141,35 @@ CREATE TABLE IF NOT EXISTS Documento (
     FOREIGN KEY (Pessoa_idPessoa) REFERENCES Pessoa(idPessoa) ON DELETE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS Historico_escolar (
+    idHistoricoEscolar INT AUTO_INCREMENT PRIMARY KEY,
+    Pessoa_idPessoa INT NOT NULL,
+    ano INT NOT NULL,
+    serie VARCHAR(45),
+    obediencia BOOLEAN NOT NULL DEFAULT FALSE,
+    prestatividade BOOLEAN NOT NULL DEFAULT FALSE,
+    participacao BOOLEAN NOT NULL DEFAULT FALSE,
+    Documento_idBoletim INT,
+    Documento_idDeclaracao INT,
+    outroClube BOOLEAN NOT NULL DEFAULT FALSE,
+    clubeOrigem VARCHAR(100),
+    classeConcluidaOrigem BOOLEAN NOT NULL DEFAULT FALSE,
+    UNIQUE (Pessoa_idPessoa, ano),
+    FOREIGN KEY (Pessoa_idPessoa) REFERENCES Pessoa(idPessoa) ON DELETE CASCADE,
+    FOREIGN KEY (Documento_idBoletim) REFERENCES Documento(idDocumento) ON DELETE SET NULL,
+    FOREIGN KEY (Documento_idDeclaracao) REFERENCES Documento(idDocumento) ON DELETE SET NULL
+);
+
+CREATE TABLE IF NOT EXISTS Especialidade_concluida (
+    idEspecialidadeConcluida INT AUTO_INCREMENT PRIMARY KEY,
+    Pessoa_idPessoa INT NOT NULL,
+    Especialidade_idEspecialidade INT NOT NULL,
+    ano INT NOT NULL,
+    UNIQUE (Pessoa_idPessoa, Especialidade_idEspecialidade),
+    FOREIGN KEY (Pessoa_idPessoa) REFERENCES Pessoa(idPessoa) ON DELETE CASCADE,
+    FOREIGN KEY (Especialidade_idEspecialidade) REFERENCES Especialidade(idEspecialidade) ON DELETE CASCADE
+);
+
 CREATE TABLE IF NOT EXISTS presenca (
     idPresenca INT AUTO_INCREMENT PRIMARY KEY,
     Chamada_idChamada INT NOT NULL,
@@ -164,6 +193,10 @@ CREATE TABLE IF NOT EXISTS Medicacao (
     horario_inicio DATETIME,
     horario_fim DATETIME,
     dose DECIMAL(10,2),
+    unidade_dose VARCHAR(20),
+    dias_semana VARCHAR(45),
+    horarios VARCHAR(100),
+    observacoes VARCHAR(255),
     FOREIGN KEY (Ficha_medica_idFichaMedica) REFERENCES Ficha_medica(idFichaMedica) ON DELETE CASCADE,
     FOREIGN KEY (Medicamento_idMedicamento) REFERENCES Medicamento(idMedicamento) ON DELETE CASCADE,
     FOREIGN KEY (Documento_idDocumento) REFERENCES Documento(idDocumento) ON DELETE SET NULL

@@ -16,6 +16,9 @@ public class DocumentoMapper {
         dto.setMimeType(entity.getMimeType());
         dto.setTamanho(entity.getTamanho());
         dto.setDataUpload(entity.getDataUpload());
+        dto.setPosX(entity.getPosX());
+        dto.setPosY(entity.getPosY());
+        dto.setZoom(entity.getZoom());
         if (entity.getPessoa() != null) {
             dto.setIdPessoa(entity.getPessoa().getIdPessoa());
             dto.setNomePessoa(entity.getPessoa().getNome());

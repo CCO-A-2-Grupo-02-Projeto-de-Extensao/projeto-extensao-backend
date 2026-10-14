@@ -45,6 +45,10 @@ public class MedicacaoService {
         medicacao.setHorarioInicio(request.getHorarioInicio());
         medicacao.setHorarioFim(request.getHorarioFim());
         medicacao.setDose(request.getDose());
+        medicacao.setUnidadeDose(request.getUnidadeDose());
+        medicacao.setDiasSemana(request.getDiasSemana());
+        medicacao.setHorarios(request.getHorarios());
+        medicacao.setObservacoes(request.getObservacoes());
 
         if (request.getIdDocumento() != null) {
             Documento doc = documentoRepository.findById(request.getIdDocumento())
@@ -74,6 +78,10 @@ public class MedicacaoService {
         medicacao.setHorarioInicio(request.getHorarioInicio());
         medicacao.setHorarioFim(request.getHorarioFim());
         medicacao.setDose(request.getDose());
+        medicacao.setUnidadeDose(request.getUnidadeDose());
+        medicacao.setDiasSemana(request.getDiasSemana());
+        medicacao.setHorarios(request.getHorarios());
+        medicacao.setObservacoes(request.getObservacoes());
 
         if (request.getIdDocumento() != null) {
             Documento doc = documentoRepository.findById(request.getIdDocumento())

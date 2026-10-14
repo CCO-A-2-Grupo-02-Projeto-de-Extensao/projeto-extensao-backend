@@ -15,6 +15,10 @@ public class MedicacaoMapper {
         dto.setHorarioInicio(entity.getHorarioInicio());
         dto.setHorarioFim(entity.getHorarioFim());
         dto.setDose(entity.getDose());
+        dto.setUnidadeDose(entity.getUnidadeDose());
+        dto.setDiasSemana(entity.getDiasSemana());
+        dto.setHorarios(entity.getHorarios());
+        dto.setObservacoes(entity.getObservacoes());
         if (entity.getDocumento() != null) {
             dto.setIdDocumento(entity.getDocumento().getId());
             dto.setNomeDocumento(entity.getDocumento().getNomeOriginal());

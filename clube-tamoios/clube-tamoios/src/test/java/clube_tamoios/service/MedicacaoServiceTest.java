@@ -179,6 +179,10 @@ class MedicacaoServiceTest {
         MedicacaoAtualizacaoRequest atualizacaoRequest = new MedicacaoAtualizacaoRequest();
         atualizacaoRequest.setIdMedicamento(1);
         atualizacaoRequest.setDose(new BigDecimal("20.00"));
+        atualizacaoRequest.setUnidadeDose("mg");
+        atualizacaoRequest.setDiasSemana("SEG,QUA,SEX");
+        atualizacaoRequest.setHorarios("08:00,20:00");
+        atualizacaoRequest.setObservacoes("Tomar após a refeição");
 
         when(medicacaoRepository.findById(1)).thenReturn(Optional.of(medicacao));
         when(medicamentoRepository.findById(1)).thenReturn(Optional.of(medicamento));
@@ -187,6 +191,11 @@ class MedicacaoServiceTest {
         Medicacao resultado = service.atualizar(1, atualizacaoRequest);
 
         assertThat(resultado).isNotNull();
+        assertThat(medicacao.getDose()).isEqualByComparingTo("20.00");
+        assertThat(medicacao.getUnidadeDose()).isEqualTo("mg");
+        assertThat(medicacao.getDiasSemana()).isEqualTo("SEG,QUA,SEX");
+        assertThat(medicacao.getHorarios()).isEqualTo("08:00,20:00");
+        assertThat(medicacao.getObservacoes()).isEqualTo("Tomar após a refeição");
         verify(medicacaoRepository).save(medicacao);
     }
 
