@@ -32,7 +32,10 @@ public class UsuarioMapper {
         response.setEmail(usuario.getEmail());
         response.setAtivo(usuario.getAtivo());
 
+        // O front usa o idPessoa para saber qual membro da listagem e o proprio
+        // usuario logado — e assim impedir que ele se desative.
         if (usuario.getPessoa() != null) {
+            response.setIdPessoa(usuario.getPessoa().getIdPessoa());
             response.setNomePessoa(usuario.getPessoa().getNome());
         }
 

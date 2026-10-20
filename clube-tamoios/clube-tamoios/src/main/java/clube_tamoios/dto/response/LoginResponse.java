@@ -3,6 +3,7 @@ package clube_tamoios.dto.response;
 public class LoginResponse {
 
     private Integer idUsuario;
+    private Integer idPessoa;
     private String email;
     private String nomePessoa;
     private String nomeCargo;
@@ -13,6 +14,9 @@ public class LoginResponse {
 
     public Integer getIdUsuario() { return idUsuario; }
     public void setIdUsuario(Integer idUsuario) { this.idUsuario = idUsuario; }
+
+    public Integer getIdPessoa() { return idPessoa; }
+    public void setIdPessoa(Integer idPessoa) { this.idPessoa = idPessoa; }
 
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
