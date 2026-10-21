@@ -13,14 +13,35 @@ public class RabbitBeanConfiguration {
     public static final String EXCHANGE_AVISO = "exchange_aviso";
     public static final String ROUTING_KEY_AVISO = "routing_key_aviso";
 
+    public static final String QUEUE_RESPONSAVEIS = "queue_responsaveis_documentos";
+    public static final String QUEUE_DIRETORIA = "queue_diretoria_documentos";
+    public static final String EXCHANGE_DOCUMENTO_ATUALIZADO = "exchange_documento_atualizado";
+    public static final String ROUTING_KEY_RESPONSAVEIS = "routing_key_responsaveis_documentos";
+    public static final String ROUTING_KEY_DIRETORIA = "routing_key_diretoria_documentos";
+
     @Bean
     public Queue pedidosQueue() {
         return new Queue(QUEUE_AVISO, true);
     }
 
     @Bean
+    public Queue filaResponsaveis() {
+        return new Queue(QUEUE_RESPONSAVEIS, true);
+    }
+
+    @Bean
+    public Queue filaDiretoria() {
+        return new Queue(QUEUE_DIRETORIA, true);
+    }
+
+    @Bean
     public DirectExchange pedidosExchange() {
         return new DirectExchange(EXCHANGE_AVISO);
+    }
+
+    @Bean
+    public DirectExchange exchangeDocumentoAtualizado() {
+        return new DirectExchange(EXCHANGE_DOCUMENTO_ATUALIZADO);
     }
 
     @Bean
@@ -30,7 +51,20 @@ public class RabbitBeanConfiguration {
                 .with(ROUTING_KEY_AVISO);
     }
 
-    // Faz a conversão automática entre objetos Java e JSON nas mensagens.
+    @Bean
+    public Binding responsaveisBinding(Queue filaResponsaveis, DirectExchange exchangeDocumentoAtualizado) {
+        return BindingBuilder.bind(filaResponsaveis)
+                .to(exchangeDocumentoAtualizado)
+                .with(ROUTING_KEY_RESPONSAVEIS);
+    }
+
+    @Bean
+    public Binding diretoriaBinding(Queue filaDiretoria, DirectExchange exchangeDocumentoAtualizado) {
+        return BindingBuilder.bind(filaDiretoria)
+                .to(exchangeDocumentoAtualizado)
+                .with(ROUTING_KEY_DIRETORIA);
+    }
+
     @Bean
     public MessageConverter jsonMessageConverter() {
         return new Jackson2JsonMessageConverter();

@@ -1,15 +1,18 @@
 package clube_tamoios.controller;
 
+import clube_tamoios.dto.DocumentoAtualizadoMessage;
 import clube_tamoios.dto.request.EnquadramentoRequest;
 import clube_tamoios.dto.response.DocumentoResponse;
 import clube_tamoios.entity.Documento;
 import clube_tamoios.mapper.DocumentoMapper;
+import clube_tamoios.producer.AvisoProducer;
 import clube_tamoios.service.ArquivoUpload;
 import clube_tamoios.service.DocumentoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
@@ -35,9 +38,11 @@ import org.springframework.web.multipart.MultipartFile;
 public class DocumentoController {
 
     private final DocumentoService documentoService;
+    private final AvisoProducer avisoProducer;
 
-    public DocumentoController(DocumentoService documentoService) {
+    public DocumentoController(DocumentoService documentoService, AvisoProducer avisoProducer) {
         this.documentoService = documentoService;
+        this.avisoProducer = avisoProducer;
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -47,6 +52,7 @@ public class DocumentoController {
             @RequestParam("idPessoa") Integer idPessoa,
             @RequestParam(value = "tipo", required = false) String tipo) {
         Documento salvo = documentoService.salvar(paraUpload(arquivo), idPessoa, tipo);
+        avisoProducer.enviarDocumentoAtualizado(criarEventoDocumentoAtualizado(salvo, "upload"));
         return ResponseEntity.status(HttpStatus.CREATED).body(DocumentoMapper.toResponse(salvo));
     }
 
@@ -56,6 +62,7 @@ public class DocumentoController {
             @PathVariable Integer id,
             @RequestParam("arquivo") MultipartFile arquivo) {
         Documento atualizado = documentoService.substituir(id, paraUpload(arquivo));
+        avisoProducer.enviarDocumentoAtualizado(criarEventoDocumentoAtualizado(atualizado, "substituicao"));
         return ResponseEntity.ok(DocumentoMapper.toResponse(atualizado));
     }
 
@@ -112,6 +119,47 @@ public class DocumentoController {
         Documento atualizado = documentoService.atualizarEnquadramento(
                 id, request.getPosX(), request.getPosY(), request.getZoom());
         return ResponseEntity.ok(DocumentoMapper.toResponse(atualizado));
+    }
+
+    private DocumentoAtualizadoMessage criarEventoDocumentoAtualizado(Documento documento, String tipoOperacao) {
+        String nomePessoa = documento.getPessoa() != null ? documento.getPessoa().getNome() : "Desbravador";
+        String tipoDocumento = documento.getTipo() != null ? documento.getTipo() : "documento";
+        String tipoDocumentoFormatado = traduzTipoDocumento(tipoDocumento);
+        String mensagemResponsavel = String.format(
+                "%s atualizou a %s do desbravador %s. Revise as informações antes de prosseguir.",
+                "upload".equals(tipoOperacao) ? "Secretária" : "Secretária",
+                tipoDocumentoFormatado,
+                nomePessoa
+        );
+        String mensagemDiretoria = String.format(
+                "Diretoria: a %s do desbravador %s foi %s no sistema. Verificação necessária.",
+                tipoDocumentoFormatado,
+                nomePessoa,
+                "upload".equals(tipoOperacao) ? "atualizada" : "substituída"
+        );
+
+        return new DocumentoAtualizadoMessage(
+                documento.getPessoa() != null ? documento.getPessoa().getIdPessoa() : null,
+                nomePessoa,
+                documento.getId(),
+                tipoDocumento,
+                documento.getNomeOriginal(),
+                LocalDateTime.now(),
+                tipoOperacao,
+                mensagemResponsavel,
+                "responsavel",
+                true,
+                true
+        );
+    }
+
+    private String traduzTipoDocumento(String tipoDocumento) {
+        if (tipoDocumento == null) return "documento";
+        return switch (tipoDocumento) {
+            case "fichaMedica" -> "ficha médica";
+            case "foto" -> "foto";
+            default -> tipoDocumento;
+        };
     }
 
     private static ArquivoUpload paraUpload(MultipartFile arquivo) {
