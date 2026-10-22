@@ -2,12 +2,16 @@ package clube_tamoios.controller;
 
 import clube_tamoios.dto.request.EspecialidadeRequest;
 import clube_tamoios.dto.response.EspecialidadeResponse;
+import clube_tamoios.dto.response.PaginaResponse;
 import clube_tamoios.mapper.EspecialidadeMapper;
 import clube_tamoios.service.EspecialidadeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,6 +34,16 @@ public class EspecialidadeController {
     @Operation(summary = "Listar todas as especialidades")
     public ResponseEntity<List<EspecialidadeResponse>> listar() {
         return ResponseEntity.ok(EspecialidadeMapper.toResponse(service.listar()));
+    }
+
+    @GetMapping("/pagina")
+    @Operation(summary = "Listar especialidades paginadas, com filtros de nome e categoria")
+    public ResponseEntity<PaginaResponse<EspecialidadeResponse>> listarPaginado(
+            @RequestParam(required = false) String busca,
+            @RequestParam(required = false) String categoria,
+            @PageableDefault(size = 10, sort = "nome", direction = Sort.Direction.ASC) Pageable pageable) {
+        return ResponseEntity.ok(PaginaResponse.de(
+                service.listarPaginado(busca, categoria, pageable).map(EspecialidadeMapper::toResponse)));
     }
 
     @GetMapping("/{id}")
