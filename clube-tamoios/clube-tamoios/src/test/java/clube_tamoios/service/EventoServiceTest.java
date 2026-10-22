@@ -1,8 +1,11 @@
 package clube_tamoios.service;
 
 import clube_tamoios.dto.request.EventoRequest;
+import clube_tamoios.entity.Chamada;
 import clube_tamoios.entity.Evento;
 import clube_tamoios.exception.EntidadeNaoEncontradaException;
+import clube_tamoios.exception.RegraDeNegocioException;
+import clube_tamoios.repository.ChamadaRepository;
 import clube_tamoios.repository.EventoRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -23,6 +27,9 @@ class EventoServiceTest {
 
     @Mock
     private EventoRepository repository;
+
+    @Mock
+    private ChamadaRepository chamadaRepository;
 
     @InjectMocks
     private EventoService service;
@@ -69,5 +76,32 @@ class EventoServiceTest {
         when(repository.findById(99)).thenReturn(Optional.empty());
 
         assertThrows(EntidadeNaoEncontradaException.class, () -> service.buscarPorId(99));
+    }
+
+    @Test
+    @DisplayName("Deve deletar evento sem chamada")
+    void deveDeletarEventoSemChamada() {
+        Evento evento = new Evento();
+        evento.setIdEvento(1);
+
+        when(repository.findById(1)).thenReturn(Optional.of(evento));
+        when(chamadaRepository.findByEventoIdEvento(1)).thenReturn(List.of());
+
+        service.deletar(1);
+
+        verify(repository, times(1)).delete(evento);
+    }
+
+    @Test
+    @DisplayName("Não deve deletar evento com chamada registrada")
+    void naoDeveDeletarEventoComChamada() {
+        Evento evento = new Evento();
+        evento.setIdEvento(1);
+
+        when(repository.findById(1)).thenReturn(Optional.of(evento));
+        when(chamadaRepository.findByEventoIdEvento(1)).thenReturn(List.of(new Chamada()));
+
+        assertThrows(RegraDeNegocioException.class, () -> service.deletar(1));
+        verify(repository, never()).delete(any(Evento.class));
     }
 }
