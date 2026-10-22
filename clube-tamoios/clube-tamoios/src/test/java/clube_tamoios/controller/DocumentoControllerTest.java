@@ -3,6 +3,7 @@ package clube_tamoios.controller;
 import clube_tamoios.config.SecurityConfig;
 import clube_tamoios.entity.Documento;
 import clube_tamoios.entity.Pessoa;
+import clube_tamoios.producer.AvisoProducer;
 import clube_tamoios.security.JwtTokenService;
 import clube_tamoios.service.TokenService;
 import clube_tamoios.service.DocumentoService;
@@ -22,6 +23,7 @@ import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -43,6 +45,9 @@ class DocumentoControllerTest {
 
     @MockBean
     private DocumentoService documentoService;
+
+    @MockBean
+    private AvisoProducer avisoProducer;
 
     private String token;
     private Documento documento;
@@ -81,6 +86,8 @@ class DocumentoControllerTest {
                 .andExpect(jsonPath("$.nomeOriginal").value("laudo.pdf"))
                 .andExpect(jsonPath("$.mimeType").value("application/pdf"))
                 .andExpect(jsonPath("$.tamanho").value(1024));
+
+        verify(avisoProducer).enviarDocumentoAtualizado(any());
     }
 
     @Test
