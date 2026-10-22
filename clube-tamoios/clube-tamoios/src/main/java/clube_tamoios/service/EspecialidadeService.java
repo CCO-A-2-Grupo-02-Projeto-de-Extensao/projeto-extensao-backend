@@ -4,6 +4,9 @@ import clube_tamoios.dto.request.EspecialidadeRequest;
 import clube_tamoios.entity.Especialidade;
 import clube_tamoios.exception.EntidadeNaoEncontradaException;
 import clube_tamoios.repository.EspecialidadeRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,6 +22,20 @@ public class EspecialidadeService {
 
     public List<Especialidade> listar() {
         return repository.findAll();
+    }
+
+    public Page<Especialidade> listarPaginado(String busca, String categoria, Pageable pageable) {
+        Specification<Especialidade> filtro = Specification.where(null);
+
+        if (busca != null && !busca.isBlank()) {
+            String termo = "%" + busca.trim().toLowerCase() + "%";
+            filtro = filtro.and((root, query, cb) -> cb.like(cb.lower(root.get("nome")), termo));
+        }
+        if (categoria != null && !categoria.isBlank()) {
+            filtro = filtro.and((root, query, cb) -> cb.equal(root.get("categoria"), categoria));
+        }
+
+        return repository.findAll(filtro, pageable);
     }
 
     public Especialidade buscarPorId(Integer id) {

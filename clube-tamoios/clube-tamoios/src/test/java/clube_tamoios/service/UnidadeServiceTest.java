@@ -79,7 +79,7 @@ class UnidadeServiceTest {
 
         verify(turmaRepository).deleteAll(List.of(turma));
         verify(unidadeRepository).delete(alvo);
-        verify(pessoaRepository, never()).delete(any());
+        verify(pessoaRepository, never()).delete(any(Pessoa.class));
     }
 
     @Test
