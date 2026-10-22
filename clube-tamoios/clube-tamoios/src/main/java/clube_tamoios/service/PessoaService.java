@@ -1,6 +1,7 @@
 package clube_tamoios.service;
 
 import clube_tamoios.dto.request.PessoaCadastroRequest;
+import clube_tamoios.dto.response.PessoasResumoResponse;
 import clube_tamoios.entity.Cargo;
 import clube_tamoios.entity.Classe;
 import clube_tamoios.entity.Genero;
@@ -13,10 +14,14 @@ import clube_tamoios.repository.GeneroRepository;
 import clube_tamoios.repository.PessoaRepository;
 import clube_tamoios.repository.UnidadeRepository;
 import clube_tamoios.repository.UsuarioRepository;
+import jakarta.persistence.criteria.JoinType;
 import java.text.Normalizer;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -171,6 +176,62 @@ public class PessoaService {
 
     public List<Pessoa> listar() {
         return pessoaRepository.findAll();
+    }
+
+    public Page<Pessoa> listarPaginado(String busca, Boolean ativo, String categoria,
+            Integer idClasse, boolean semClasse, Pageable pageable) {
+        return pessoaRepository.findAll(
+                filtro(busca, ativo, categoria, idClasse, semClasse), pageable);
+    }
+
+    public PessoasResumoResponse resumir() {
+        long total = pessoaRepository.count();
+        long ativos = pessoaRepository.count(filtro(null, true, null, null, false));
+        return new PessoasResumoResponse(
+                total,
+                ativos,
+                total - ativos,
+                pessoaRepository.count(filtro(null, true, "administrativo", null, false)),
+                pessoaRepository.count(filtro(null, true, "instrutor", null, false)),
+                pessoaRepository.count(filtro(null, true, "aluno", null, false)));
+    }
+
+    private Specification<Pessoa> filtro(String busca, Boolean ativo, String categoria,
+            Integer idClasse, boolean semClasse) {
+        Specification<Pessoa> filtro = Specification.where(null);
+
+        if (busca != null && !busca.isBlank()) {
+            String termo = "%" + busca.trim().toLowerCase() + "%";
+            filtro = filtro.and((root, query, cb) -> cb.like(cb.lower(root.get("nome")), termo));
+        }
+        if (ativo != null) {
+            filtro = filtro.and((root, query, cb) -> cb.equal(root.get("ativo"), ativo));
+        }
+        if (semClasse) {
+            filtro = filtro.and((root, query, cb) -> cb.isNull(root.get("classe")));
+        } else if (idClasse != null) {
+            filtro = filtro.and((root, query, cb) ->
+                    cb.equal(root.get("classe").get("idClasse"), idClasse));
+        }
+        if (categoria != null && !categoria.isBlank()) {
+            filtro = filtro.and(daCategoria(categoria));
+        }
+
+        return filtro;
+    }
+
+    private Specification<Pessoa> daCategoria(String categoria) {
+        List<Integer> idsCargo = cargoRepository.findAll().stream()
+                .filter(cargo -> Cargo.categoriaDe(cargo).equals(categoria))
+                .map(Cargo::getIdCargo)
+                .toList();
+        boolean incluiSemCargo = Cargo.categoriaDe(null).equals(categoria);
+
+        return (root, query, cb) -> {
+            var cargo = root.join("cargo", JoinType.LEFT);
+            var doCargo = idsCargo.isEmpty() ? cb.disjunction() : cargo.get("idCargo").in(idsCargo);
+            return incluiSemCargo ? cb.or(doCargo, cb.isNull(cargo)) : doCargo;
+        };
     }
 
     public Pessoa buscarPorId(Integer id) {

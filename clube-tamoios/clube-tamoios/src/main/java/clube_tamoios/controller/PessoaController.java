@@ -3,7 +3,9 @@ package clube_tamoios.controller;
 import clube_tamoios.dto.request.PessoaCadastroRequest;
 import clube_tamoios.dto.request.VinculoClasseRequest;
 import clube_tamoios.dto.request.VinculoUnidadeRequest;
+import clube_tamoios.dto.response.PaginaResponse;
 import clube_tamoios.dto.response.PessoaResponse;
+import clube_tamoios.dto.response.PessoasResumoResponse;
 import clube_tamoios.mapper.PessoaMapper;
 import clube_tamoios.service.PessoaService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -11,6 +13,9 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +25,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -45,6 +51,26 @@ public class PessoaController {
     @Operation(summary = "Listar todas as pessoas (ativas e inativas)")
     public ResponseEntity<List<PessoaResponse>> listar() {
         return ResponseEntity.ok(PessoaMapper.toResponse(service.listar()));
+    }
+
+    @GetMapping("/pagina")
+    @Operation(summary = "Listar pessoas paginadas, com filtros de nome, situação, categoria e classe")
+    public ResponseEntity<PaginaResponse<PessoaResponse>> listarPaginado(
+            @RequestParam(required = false) String busca,
+            @RequestParam(required = false) Boolean ativo,
+            @RequestParam(required = false) String categoria,
+            @RequestParam(required = false) Integer idClasse,
+            @RequestParam(defaultValue = "false") boolean semClasse,
+            @PageableDefault(size = 10, sort = "nome", direction = Sort.Direction.ASC) Pageable pageable) {
+        return ResponseEntity.ok(PaginaResponse.de(
+                service.listarPaginado(busca, ativo, categoria, idClasse, semClasse, pageable)
+                        .map(PessoaMapper::toResponse)));
+    }
+
+    @GetMapping("/resumo")
+    @Operation(summary = "Contagem de pessoas por situação e categoria")
+    public ResponseEntity<PessoasResumoResponse> resumir() {
+        return ResponseEntity.ok(service.resumir());
     }
 
     @GetMapping("/{id}")
