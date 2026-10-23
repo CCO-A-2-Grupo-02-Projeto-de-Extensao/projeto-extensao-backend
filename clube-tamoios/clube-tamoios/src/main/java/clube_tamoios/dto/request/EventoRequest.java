@@ -9,6 +9,8 @@ public class EventoRequest {
     private LocalDate dataInicio;
     private LocalDate dataFim;
     private String descricao;
+    private String repeticao;
+    private LocalDate repetirAte;
 
     // Getters e Setters...
     public String getNome() { return nome; }
@@ -21,4 +23,8 @@ public class EventoRequest {
     public void setDataFim(LocalDate dataFim) { this.dataFim = dataFim; }
     public String getDescricao() { return descricao; }
     public void setDescricao(String descricao) { this.descricao = descricao; }
+    public String getRepeticao() { return repeticao; }
+    public void setRepeticao(String repeticao) { this.repeticao = repeticao; }
+    public LocalDate getRepetirAte() { return repetirAte; }
+    public void setRepetirAte(LocalDate repetirAte) { this.repetirAte = repetirAte; }
 }

@@ -29,7 +29,10 @@ CREATE TABLE IF NOT EXISTS evento (
     tipo VARCHAR(50),
     data_inicio DATE NOT NULL,
     data_fim DATE,
-    descricao TEXT
+    descricao TEXT,
+    serie VARCHAR(36),
+    repeticao VARCHAR(20),
+    repetir_ate DATE
 );
 
 CREATE TABLE IF NOT EXISTS chamada (

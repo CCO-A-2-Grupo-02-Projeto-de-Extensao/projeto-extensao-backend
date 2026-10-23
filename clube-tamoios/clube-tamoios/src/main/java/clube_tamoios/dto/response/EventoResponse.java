@@ -8,6 +8,9 @@ public class EventoResponse {
     private LocalDate dataInicio;
     private LocalDate dataFim;
     private String descricao;
+    private String serie;
+    private String repeticao;
+    private LocalDate repetirAte;
 
     // Getters e Setters omitidos por brevidade (gere-os normalmente)
     public Integer getIdEvento() { return idEvento; }
@@ -22,4 +25,10 @@ public class EventoResponse {
     public void setDataFim(LocalDate dataFim) { this.dataFim = dataFim; }
     public String getDescricao() { return descricao; }
     public void setDescricao(String descricao) { this.descricao = descricao; }
+    public String getSerie() { return serie; }
+    public void setSerie(String serie) { this.serie = serie; }
+    public String getRepeticao() { return repeticao; }
+    public void setRepeticao(String repeticao) { this.repeticao = repeticao; }
+    public LocalDate getRepetirAte() { return repetirAte; }
+    public void setRepetirAte(LocalDate repetirAte) { this.repetirAte = repetirAte; }
 }

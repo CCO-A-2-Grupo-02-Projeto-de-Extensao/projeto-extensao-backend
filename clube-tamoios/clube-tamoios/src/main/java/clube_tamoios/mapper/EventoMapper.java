@@ -13,6 +13,9 @@ public class EventoMapper {
         dto.setDataInicio(entity.getDataInicio());
         dto.setDataFim(entity.getDataFim());
         dto.setDescricao(entity.getDescricao());
+        dto.setSerie(entity.getSerie());
+        dto.setRepeticao(entity.getRepeticao());
+        dto.setRepetirAte(entity.getRepetirAte());
         return dto;
     }
 

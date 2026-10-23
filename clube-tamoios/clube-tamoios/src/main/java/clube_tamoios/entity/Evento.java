@@ -27,6 +27,15 @@ public class Evento {
     @Column(name = "descricao", columnDefinition = "TEXT")
     private String descricao;
 
+    @Column(name = "serie", length = 36)
+    private String serie;
+
+    @Column(name = "repeticao", length = 20)
+    private String repeticao;
+
+    @Column(name = "repetir_ate")
+    private LocalDate repetirAte;
+
     // Getters e Setters
     public Integer getIdEvento() { return idEvento; }
     public void setIdEvento(Integer idEvento) { this.idEvento = idEvento; }
@@ -40,4 +49,10 @@ public class Evento {
     public void setDataFim(LocalDate dataFim) { this.dataFim = dataFim; }
     public String getDescricao() { return descricao; }
     public void setDescricao(String descricao) { this.descricao = descricao; }
+    public String getSerie() { return serie; }
+    public void setSerie(String serie) { this.serie = serie; }
+    public String getRepeticao() { return repeticao; }
+    public void setRepeticao(String repeticao) { this.repeticao = repeticao; }
+    public LocalDate getRepetirAte() { return repetirAte; }
+    public void setRepetirAte(LocalDate repetirAte) { this.repetirAte = repetirAte; }
 }

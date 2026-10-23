@@ -40,10 +40,18 @@ public class EventoController {
         return ResponseEntity.ok(EventoMapper.toResponse(service.buscarPorId(id)));
     }
 
+    @PutMapping("/{id}")
+    @Operation(summary = "Atualizar evento; em série, escopo ESTE, SEGUINTES ou TODOS")
+    public ResponseEntity<EventoResponse> atualizar(@PathVariable Integer id,
+                                                    @RequestParam(defaultValue = "ESTE") String escopo,
+                                                    @RequestBody @Valid EventoRequest request) {
+        return ResponseEntity.ok(EventoMapper.toResponse(service.atualizar(id, request, escopo)));
+    }
+
     @DeleteMapping("/{id}")
-    @Operation(summary = "Deletar evento")
-    public ResponseEntity<Void> deletar(@PathVariable Integer id) {
-        service.deletar(id);
+    @Operation(summary = "Deletar evento; em série, escopo ESTE, SEGUINTES ou TODOS")
+    public ResponseEntity<Void> deletar(@PathVariable Integer id, @RequestParam(defaultValue = "ESTE") String escopo) {
+        service.deletar(id, escopo);
         return ResponseEntity.noContent().build();
     }
 }
