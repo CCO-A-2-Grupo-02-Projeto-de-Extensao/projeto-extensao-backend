@@ -20,8 +20,8 @@ jobs:
           - 5672:5672
           - 15672:15672
         env:
-          RABBITMQ_DEFAULT_USER: admin
-          RABBITMQ_DEFAULT_PASS: admin
+          RABBITMQ_DEFAULT_USER: test
+          RABBITMQ_DEFAULT_PASS: test
         options: >-
           --health-cmd "rabbitmq-diagnostics -q ping"
           --health-interval 10s
@@ -32,6 +32,14 @@ jobs:
     steps:
       - name: Checkout código
         uses: actions/checkout@v4
+
+      - name: Configurar Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+          cache-dependency-path: clube-tamoios/clube-tamoios/pom.xml
 
       - name: Aguardar RabbitMQ ficar disponível
         run: |
@@ -44,6 +52,15 @@ jobs:
           done
           echo "RabbitMQ não ficou disponível"
           exit 1
+
+      - name: Executar testes Maven
+        working-directory: clube-tamoios/clube-tamoios
+        env:
+          SPRING_RABBITMQ_HOST: localhost
+          SPRING_RABBITMQ_PORT: 5672
+          SPRING_RABBITMQ_USERNAME: test
+          SPRING_RABBITMQ_PASSWORD: test
+        run: mvn -B test
 
       - name: Login no Docker Hub
         uses: docker/login-action@v3
