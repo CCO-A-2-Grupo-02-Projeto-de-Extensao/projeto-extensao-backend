@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - 'clube-tamoios/clube-tamoios/**'
+      - "clube-tamoios/clube-tamoios/**"
 
 jobs:
   build-and-push:
@@ -28,3 +28,10 @@ jobs:
           context: ./clube-tamoios/clube-tamoios
           push: true
           tags: pedrobarbosa996/arandu_digital:backend
+
+      - name: Iniciar RabbitMQ como container docker
+        uses: namoshek/rabbitmq-github-action@v1
+        with:
+          version: "3.8.9"
+          ports: "5672:5672 15672:15672"
+          container-name: "rabbitmq"
