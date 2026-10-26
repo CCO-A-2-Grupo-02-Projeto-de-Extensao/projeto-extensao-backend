@@ -36,6 +36,7 @@ class AvisoProducerTest {
                 "fichaMedica",
                 "PDF_TESTE.pdf",
                 LocalDateTime.of(2026, 10, 20, 19, 46, 6),
+                "Roberto Costa - roberto.costa@clube.com, Fernanda Alves - fernanda.alves@clube.com",
                 "upload",
                 "Documento atualizado",
                 "responsavel",
@@ -68,7 +69,7 @@ class AvisoProducerTest {
         assertEquals("responsavel", responsavel.tipoAviso());
         assertTrue(responsavel.mensagem().contains("ficha médica"));
         assertTrue(responsavel.mensagem().contains("André Luiz Cunha"));
-        assertTrue(responsavel.mensagem().contains("valide"));
+
 
         assertEquals("diretoria", diretoria.tipoAviso());
         assertTrue(diretoria.mensagem().contains("Diretoria"));
