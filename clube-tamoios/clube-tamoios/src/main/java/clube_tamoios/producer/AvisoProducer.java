@@ -2,7 +2,6 @@ package clube_tamoios.producer;
 
 import clube_tamoios.config.RabbitBeanConfiguration;
 import clube_tamoios.dto.DocumentoAtualizadoMessage;
-import dto.AvisoMessage;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
@@ -12,16 +11,6 @@ public class AvisoProducer {
 
     public AvisoProducer(RabbitTemplate rabbitTemplate) {
         this.rabbitTemplate = rabbitTemplate;
-    }
-
-    public void enviar(AvisoMessage aviso) {
-        rabbitTemplate.convertAndSend(
-                RabbitBeanConfiguration.EXCHANGE_AVISO,
-                RabbitBeanConfiguration.ROUTING_KEY_AVISO,
-                aviso
-        );
-
-        System.out.println("[PRODUCER] Aviso enviado: " + aviso);
     }
 
     public void enviarDocumentoAtualizado(DocumentoAtualizadoMessage evento) {
@@ -74,22 +63,5 @@ public class AvisoProducer {
         System.out.println("[PRODUCER] Documento atualizado publicado para responsáveis e diretoria: " + evento);
     }
 
-    public void enviarVarios(AvisoMessage pedido, int quantidade) {
-        for (int i = 1; i <= quantidade; i++) {
-            AvisoMessage novoPedido = new AvisoMessage(
-                    pedido.id() + i,
-                    pedido.cliente(),
-                    pedido.produto(),
-                    pedido.quantidade()
-            );
 
-            rabbitTemplate.convertAndSend(
-                    RabbitBeanConfiguration.EXCHANGE_AVISO,
-                    RabbitBeanConfiguration.ROUTING_KEY_AVISO,
-                    novoPedido
-            );
-
-            System.out.println("[PRODUCER] Mensagem " + i + " de " + quantidade + " enviada: " + novoPedido);
-        }
-    }
 }
