@@ -10,6 +10,7 @@ public record DocumentoAtualizadoMessage(
         String tipoDocumento,
         String nomeArquivo,
         LocalDateTime dataAlteracao,
+        String listaDiretoria,
         String tipoAviso,
         String mensagem,
         String canal,

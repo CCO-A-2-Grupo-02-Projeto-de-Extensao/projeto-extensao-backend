@@ -8,12 +8,17 @@ import clube_tamoios.mapper.DocumentoMapper;
 import clube_tamoios.producer.AvisoProducer;
 import clube_tamoios.service.ArquivoUpload;
 import clube_tamoios.service.DocumentoService;
+import clube_tamoios.service.UsuarioService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -39,10 +44,12 @@ public class DocumentoController {
 
     private final DocumentoService documentoService;
     private final AvisoProducer avisoProducer;
+    private final UsuarioService usuarioService;
 
-    public DocumentoController(DocumentoService documentoService, AvisoProducer avisoProducer) {
+    public DocumentoController(DocumentoService documentoService, AvisoProducer avisoProducer,  UsuarioService usuarioService) {
         this.documentoService = documentoService;
         this.avisoProducer = avisoProducer;
+        this.usuarioService = usuarioService;
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -125,6 +132,10 @@ public class DocumentoController {
         String nomePessoa = documento.getPessoa() != null ? documento.getPessoa().getNome() : "Desbravador";
         String tipoDocumento = documento.getTipo() != null ? documento.getTipo() : "documento";
         String tipoDocumentoFormatado = traduzTipoDocumento(tipoDocumento);
+        String listaDiretoria = usuarioService.listarAtivos().stream()
+                .map(usuario -> usuario.getNomePessoa() + " - " + usuario.getEmail())
+                .collect(Collectors.joining(", "));
+
         String mensagemResponsavel = String.format(
                 "%s atualizou a %s do desbravador %s. Revise as informações antes de prosseguir.",
                 "upload".equals(tipoOperacao) ? "Secretária" : "Secretária",
@@ -132,7 +143,8 @@ public class DocumentoController {
                 nomePessoa
         );
         String mensagemDiretoria = String.format(
-                "Diretoria: a %s do desbravador %s foi %s no sistema. Verificação necessária.",
+                "Diretoria: a %s do desbravador %s foi %s no sistema. Verificação necessária e se necessário, acionar os responsáveis e outros membros da diretoria.",
+                listaDiretoria,
                 tipoDocumentoFormatado,
                 nomePessoa,
                 "upload".equals(tipoOperacao) ? "atualizada" : "substituída"
@@ -145,6 +157,7 @@ public class DocumentoController {
                 tipoDocumento,
                 documento.getNomeOriginal(),
                 LocalDateTime.now(),
+                listaDiretoria,
                 tipoOperacao,
                 mensagemResponsavel,
                 "responsavel",
