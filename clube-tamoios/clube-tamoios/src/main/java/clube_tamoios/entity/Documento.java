@@ -22,7 +22,7 @@ public class Documento {
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "Pessoa_idPessoa", nullable = false)
+    @JoinColumn(name = "Pessoa_idPessoa", nullable = true)
     private Pessoa pessoa;
 
     @Column(length = 45)

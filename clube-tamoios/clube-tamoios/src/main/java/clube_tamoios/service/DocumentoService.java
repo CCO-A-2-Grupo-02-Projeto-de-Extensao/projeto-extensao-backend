@@ -19,4 +19,6 @@ public interface DocumentoService {
 
     /** Grava o enquadramento da imagem (object-position + zoom). */
     Documento atualizarEnquadramento(Integer id, Double posX, Double posY, Double zoom);
+
+    List<Documento> listarPorTipo(String tipoDocumento);
 }

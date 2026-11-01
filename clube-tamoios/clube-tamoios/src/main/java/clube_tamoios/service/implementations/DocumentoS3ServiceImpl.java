@@ -130,4 +130,9 @@ public class DocumentoS3ServiceImpl implements DocumentoService {
         doc.setZoom(zoom);
         return documentoRepository.save(doc);
     }
+
+    @Override
+    public List<Documento> listarPorTipo(String tipoDocumento) {
+        return documentoRepository.findByTipo(tipoDocumento);
+    }
 }

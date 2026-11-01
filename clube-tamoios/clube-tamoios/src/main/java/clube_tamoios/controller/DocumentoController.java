@@ -191,4 +191,12 @@ public class DocumentoController {
         documentoService.deletarPorId(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/tipo/{tipoDocumento}")
+    @Operation(summary = "Listar documentos de um determinado tipo")
+    public ResponseEntity<List<DocumentoResponse>> listarPorTipo(@PathVariable String tipoDocumento) {
+        List<Documento> docs = documentoService.listarPorTipo(tipoDocumento);
+        return ResponseEntity.ok(DocumentoMapper.toResponse(docs));
+    }
+
 }
