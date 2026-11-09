@@ -62,7 +62,7 @@ public class AvisoProducer {
                 paraDiretoria
         );
 
-        System.out.println("[PRODUCER] Documento atualizado publicado para responsáveis e diretoria: " + evento);
+        System.out.println("[PRODUCER] Documento atualizado publicado para responsáveis e diretoria");
     }
 
 
