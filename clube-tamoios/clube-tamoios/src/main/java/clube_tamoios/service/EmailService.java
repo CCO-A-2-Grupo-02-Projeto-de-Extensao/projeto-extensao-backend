@@ -18,9 +18,13 @@ public class EmailService {
     @Autowired
     private JavaMailSender mailSender;
 
+    @Value("${SPRING_MAILSENDER_USERNAME:usuario@exemplo.com}")
+    private String fromEmail;
+
+
     public void sendSimpleEmail(String to, String subject, String text) {
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom("lucashideakitsuzukusptech@gmail.com");
+        message.setFrom(this.fromEmail);
         message.setTo(to);
         message.setSubject(subject);
         message.setText(text);
