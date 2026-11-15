@@ -2,11 +2,16 @@ package clube_tamoios.producer;
 
 import clube_tamoios.config.RabbitBeanConfiguration;
 import clube_tamoios.dto.DocumentoAtualizadoMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.amqp.AmqpException;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
 public class AvisoProducer {
+    private static final Logger log = LoggerFactory.getLogger(AvisoProducer.class);
+
     private final RabbitTemplate rabbitTemplate;
 
     public AvisoProducer(RabbitTemplate rabbitTemplate) {
@@ -50,17 +55,22 @@ public class AvisoProducer {
                 true
         );
 
-        rabbitTemplate.convertAndSend(
-                RabbitBeanConfiguration.EXCHANGE_DOCUMENTO_ATUALIZADO,
-                RabbitBeanConfiguration.ROUTING_KEY_RESPONSAVEIS,
-                paraResponsaveis
-        );
+        try {
+            rabbitTemplate.convertAndSend(
+                    RabbitBeanConfiguration.EXCHANGE_DOCUMENTO_ATUALIZADO,
+                    RabbitBeanConfiguration.ROUTING_KEY_RESPONSAVEIS,
+                    paraResponsaveis
+            );
 
-        rabbitTemplate.convertAndSend(
-                RabbitBeanConfiguration.EXCHANGE_DOCUMENTO_ATUALIZADO,
-                RabbitBeanConfiguration.ROUTING_KEY_DIRETORIA,
-                paraDiretoria
-        );
+            rabbitTemplate.convertAndSend(
+                    RabbitBeanConfiguration.EXCHANGE_DOCUMENTO_ATUALIZADO,
+                    RabbitBeanConfiguration.ROUTING_KEY_DIRETORIA,
+                    paraDiretoria
+            );
+        } catch (AmqpException e) {
+            log.warn("Aviso de documento atualizado não publicado: {}", e.getMessage());
+            return;
+        }
 
         System.out.println("[PRODUCER] Documento atualizado publicado para responsáveis e diretoria");
     }
