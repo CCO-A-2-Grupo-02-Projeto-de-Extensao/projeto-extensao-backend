@@ -1,5 +1,6 @@
 package clube_tamoios.controller;
 
+import clube_tamoios.dto.request.ConsentimentoRequest;
 import clube_tamoios.dto.request.PessoaCadastroRequest;
 import clube_tamoios.dto.request.VinculoClasseRequest;
 import clube_tamoios.dto.request.VinculoUnidadeRequest;
@@ -18,6 +19,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -101,6 +103,21 @@ public class PessoaController {
                                                          @RequestBody VinculoUnidadeRequest request) {
         return ResponseEntity.ok(
                 PessoaMapper.toResponse(service.definirUnidade(id, request.getIdUnidade())));
+    }
+
+    @PutMapping("/{id}/consentimento")
+    @Operation(summary = "Registrar o consentimento do responsável para o tratamento dos dados (LGPD)")
+    public ResponseEntity<PessoaResponse> registrarConsentimento(
+            @PathVariable Integer id,
+            @RequestBody @Valid ConsentimentoRequest request) {
+        return ResponseEntity.ok(PessoaMapper.toResponse(
+                service.registrarConsentimento(id, request.getNomeResponsavel())));
+    }
+
+    @DeleteMapping("/{id}/consentimento")
+    @Operation(summary = "Revogar o consentimento do responsável")
+    public ResponseEntity<PessoaResponse> revogarConsentimento(@PathVariable Integer id) {
+        return ResponseEntity.ok(PessoaMapper.toResponse(service.revogarConsentimento(id)));
     }
 
     @PatchMapping("/{id}/desativar")

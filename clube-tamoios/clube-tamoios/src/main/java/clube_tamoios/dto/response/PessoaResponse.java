@@ -1,5 +1,7 @@
 package clube_tamoios.dto.response;
 
+import java.time.LocalDateTime;
+
 public class PessoaResponse {
 
     private Integer idPessoa;
@@ -36,6 +38,10 @@ public class PessoaResponse {
     private String telefoneResponsavel2;
     private String rgResponsavel2;
     private String cpfResponsavel2;
+
+    private String consentimentoResponsavel;
+    private LocalDateTime consentimentoEm;
+    private String consentimentoVersao;
 
     public Integer getIdPessoa() { return idPessoa; }
     public void setIdPessoa(Integer idPessoa) { this.idPessoa = idPessoa; }
@@ -117,4 +123,13 @@ public class PessoaResponse {
 
     public String getCpfResponsavel2() { return cpfResponsavel2; }
     public void setCpfResponsavel2(String cpfResponsavel2) { this.cpfResponsavel2 = cpfResponsavel2; }
+
+    public String getConsentimentoResponsavel() { return consentimentoResponsavel; }
+    public void setConsentimentoResponsavel(String consentimentoResponsavel) { this.consentimentoResponsavel = consentimentoResponsavel; }
+
+    public LocalDateTime getConsentimentoEm() { return consentimentoEm; }
+    public void setConsentimentoEm(LocalDateTime consentimentoEm) { this.consentimentoEm = consentimentoEm; }
+
+    public String getConsentimentoVersao() { return consentimentoVersao; }
+    public void setConsentimentoVersao(String consentimentoVersao) { this.consentimentoVersao = consentimentoVersao; }
 }

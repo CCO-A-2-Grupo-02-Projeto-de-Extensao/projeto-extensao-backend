@@ -27,6 +27,9 @@ public class PessoaMapper {
         dto.setTelefoneResponsavel2(entity.getTelefoneResponsavel2());
         dto.setRgResponsavel2(entity.getRgResponsavel2());
         dto.setCpfResponsavel2(entity.getCpfResponsavel2());
+        dto.setConsentimentoResponsavel(entity.getConsentimentoResponsavel());
+        dto.setConsentimentoEm(entity.getConsentimentoEm());
+        dto.setConsentimentoVersao(entity.getConsentimentoVersao());
 
         if (entity.getClasse() != null) {
             dto.setNomeClasse(entity.getClasse().getNome());

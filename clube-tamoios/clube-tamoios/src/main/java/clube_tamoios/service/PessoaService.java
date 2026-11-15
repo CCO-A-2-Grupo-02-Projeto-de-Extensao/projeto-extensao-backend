@@ -8,6 +8,7 @@ import clube_tamoios.entity.Genero;
 import clube_tamoios.entity.Pessoa;
 import clube_tamoios.entity.Unidade;
 import clube_tamoios.exception.EntidadeNaoEncontradaException;
+import clube_tamoios.exception.RegraDeNegocioException;
 import clube_tamoios.repository.CargoRepository;
 import clube_tamoios.repository.ClasseRepository;
 import clube_tamoios.repository.GeneroRepository;
@@ -16,9 +17,14 @@ import clube_tamoios.repository.UnidadeRepository;
 import clube_tamoios.repository.UsuarioRepository;
 import jakarta.persistence.criteria.JoinType;
 import java.text.Normalizer;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Stream;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -37,6 +43,9 @@ public class PessoaService {
             15, "guia");
 
     private static final String CARGO_ALUNO = "desbravador";
+
+    public static final String VERSAO_TERMO_CONSENTIMENTO = "2026.1";
+    private static final ZoneId FUSO_CLUBE = ZoneId.of("America/Sao_Paulo");
 
     private final PessoaRepository pessoaRepository;
     private final ClasseRepository classeRepository;
@@ -277,6 +286,30 @@ public class PessoaService {
             pessoa.setUnidade(unidade);
         }
 
+        return pessoaRepository.save(pessoa);
+    }
+
+    public Pessoa registrarConsentimento(Integer id, String nomeResponsavel) {
+        Pessoa pessoa = buscarPorId(id);
+        String nome = Stream.of(pessoa.getNomeResponsavel1(), pessoa.getNomeResponsavel2())
+                .filter(Objects::nonNull)
+                .map(String::trim)
+                .filter(cadastrado -> cadastrado.equalsIgnoreCase(nomeResponsavel.trim()))
+                .findFirst()
+                .orElseThrow(() -> new RegraDeNegocioException(
+                        "O consentimento precisa vir de um responsável cadastrado."));
+
+        pessoa.setConsentimentoResponsavel(nome);
+        pessoa.setConsentimentoEm(LocalDateTime.now(FUSO_CLUBE).truncatedTo(ChronoUnit.SECONDS));
+        pessoa.setConsentimentoVersao(VERSAO_TERMO_CONSENTIMENTO);
+        return pessoaRepository.save(pessoa);
+    }
+
+    public Pessoa revogarConsentimento(Integer id) {
+        Pessoa pessoa = buscarPorId(id);
+        pessoa.setConsentimentoResponsavel(null);
+        pessoa.setConsentimentoEm(null);
+        pessoa.setConsentimentoVersao(null);
         return pessoaRepository.save(pessoa);
     }
 

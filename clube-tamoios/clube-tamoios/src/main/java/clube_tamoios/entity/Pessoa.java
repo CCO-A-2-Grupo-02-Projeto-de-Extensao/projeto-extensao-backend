@@ -2,6 +2,8 @@ package clube_tamoios.entity;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "Pessoa")
 public class Pessoa {
@@ -81,6 +83,15 @@ public class Pessoa {
     @Column(name = "cpf_responsavel2", length = 14)
     private String cpfResponsavel2;
 
+    @Column(name = "consentimento_responsavel", length = 100)
+    private String consentimentoResponsavel;
+
+    @Column(name = "consentimento_em")
+    private LocalDateTime consentimentoEm;
+
+    @Column(name = "consentimento_versao", length = 20)
+    private String consentimentoVersao;
+
     public Pessoa() {}
 
     public Integer getIdPessoa() { return idPessoa; }
@@ -155,4 +166,13 @@ public class Pessoa {
 
     public String getCpfResponsavel2() { return cpfResponsavel2; }
     public void setCpfResponsavel2(String cpfResponsavel2) { this.cpfResponsavel2 = cpfResponsavel2; }
+
+    public String getConsentimentoResponsavel() { return consentimentoResponsavel; }
+    public void setConsentimentoResponsavel(String consentimentoResponsavel) { this.consentimentoResponsavel = consentimentoResponsavel; }
+
+    public LocalDateTime getConsentimentoEm() { return consentimentoEm; }
+    public void setConsentimentoEm(LocalDateTime consentimentoEm) { this.consentimentoEm = consentimentoEm; }
+
+    public String getConsentimentoVersao() { return consentimentoVersao; }
+    public void setConsentimentoVersao(String consentimentoVersao) { this.consentimentoVersao = consentimentoVersao; }
 }
